@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Content Creator Studio</title>
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#f093fb" />
+  <meta name="theme-color" content="#00c9a7" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -14,69 +14,55 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0f0c29; color: #fff; font-family: system-ui, sans-serif; }
-    select option { background: #302b63; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: rgba(240,147,251,0.4); border-radius: 4px; }
-    input[type=range] { accent-color: #f093fb; }
-    textarea, input, select { outline: none; font-family: inherit; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:#0a0a0a;color:#fff;font-family:system-ui,sans-serif;}
+    select option{background:#1a1a2e;}
+    ::-webkit-scrollbar{width:4px;}
+    ::-webkit-scrollbar-thumb{background:rgba(0,201,167,0.4);border-radius:4px;}
+    input[type=range]{accent-color:#00c9a7;}
+    textarea,input,select{outline:none;font-family:inherit;}
+    .rainbow{background:linear-gradient(135deg,#ff6b6b,#feca57,#48dbfb,#ff9ff3,#54a0ff,#00c9a7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;}
   </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useRef, useCallback } = React;
-
-const GEMINI_KEY = "AIzaSyALbDopwj32v53odOvgML4c5vgJCBLefgo";
-const TABS = ["🏠 Inicio","📤 Crear","📅 Calendario","💡 Ideas","🕐 Historial"];
-const DAYS = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
-const FILTERS = [
-  {id:"none",label:"Original"},
-  {id:"brightness(1.2) contrast(1.1)",label:"Vibrante"},
-  {id:"grayscale(1)",label:"B&N"},
-  {id:"saturate(1.8)",label:"Saturado"},
-  {id:"contrast(1.3) brightness(0.9)",label:"Dramático"},
-  {id:"sepia(0.6)",label:"Vintage"},
-];
-const FORMATS = [
-  {id:"1/1",label:"Feed",size:"1080x1080",icon:"⬛"},
-  {id:"9/16",label:"Reel/Story",size:"1080x1920",icon:"📱"},
-  {id:"16/9",label:"Portada",size:"1200x630",icon:"🖥️"},
-  {id:"4/5",label:"Portrait",size:"1080x1350",icon:"📸"},
-];
-const MOODS = ["Energética 🔥","Tranquila 🌊","Romántica 💕","Motivacional 💪","Divertida 😂"];
-const STEPS_CREATE = ["📤 Subir","✨ Mejorar","🖊️ Texto","✍️ Copy","📲 Exportar"];
-const COPIES = {
-  profesional:["Compartimos con orgullo nuestro trabajo. Cada detalle fue pensado para vos. 💼✨","La excelencia no es un accidente, es el resultado del esfuerzo constante. 🎯","Innovamos cada día para ofrecerte lo mejor. Porque te lo merecés. 🚀"],
-  divertido:["¡Esto es lo que pasa cuando nos ponemos creativos! 😂🎉 ¿Te copa?","Modo creatividad activada al 100% 🔥😜 ¡No podíamos guardárnoslo!","¿Quién dijo que el trabajo no puede ser divertido? ¡Mirá esto! 🎊"],
-  inspiracional:["Cada día es una nueva oportunidad para brillar. ¡No la desperdicies! ✨🌟","Los sueños no tienen fecha de vencimiento. Seguí adelante. 💫","El éxito es la suma de pequeños esfuerzos repetidos día tras día. 💪"],
-  cercano:["Queremos compartir este momento especial con vos 🥰 ¡Gracias por estar siempre!","Hoy fue un día increíble y vos sos parte de todo esto 💕 ¡Gracias!","Sin ustedes nada de esto tendría sentido. ¡Son lo mejor! ❤️"],
-  informativo:["Te contamos todo lo que necesitás saber 👇 ¡Leé hasta el final, vale la pena!","Información importante que no podés perderte 📌 Guardá este post.","Datos clave que van a cambiar tu perspectiva 💡 ¡Compartilo!"],
-  urgente:["⚠️ ¡ÚLTIMAS HORAS! No dejes pasar esta oportunidad única. ¡Actuá ya!","🚨 ATENCIÓN: Quedan muy pocos lugares disponibles. ¡No te quedés afuera!","⏰ El tiempo corre. Esta oferta vence HOY. ¡Aprovechá ahora!"],
+const {useState,useRef,useCallback}=React;
+const GEMINI_KEY="AIzaSyALbDopwj32v53odOvgML4c5vgJCBLefgo";
+const TABS=["🏠","📤","📅","💡","🏷️","🕐"];
+const TAB_LABELS=["Inicio","Crear","Calendario","Ideas","Precios","Historial"];
+const DAYS=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+const FILTERS=[{id:"none",label:"Original"},{id:"brightness(1.2) contrast(1.1)",label:"Vibrante"},{id:"grayscale(1)",label:"B&N"},{id:"saturate(1.8)",label:"Saturado"},{id:"contrast(1.3) brightness(0.9)",label:"Dramático"},{id:"sepia(0.6)",label:"Vintage"}];
+const FORMATS=[{id:"1/1",label:"Feed",size:"1080x1080",icon:"⬛"},{id:"9/16",label:"Reel",size:"1080x1920",icon:"📱"},{id:"16/9",label:"Portada",size:"1200x630",icon:"🖥️"},{id:"4/5",label:"Portrait",size:"1080x1350",icon:"📸"}];
+const MOODS=["Energética 🔥","Tranquila 🌊","Romántica 💕","Motivacional 💪","Divertida 😂"];
+const STEPS_CREATE=["📤 Subir","✨ Mejorar","🖊️ Texto","✍️ Copy","📲 Exportar"];
+const TONES={
+  profesional:"profesional y serio",
+  divertido:"divertido y con humor",
+  inspiracional:"inspiracional y motivador",
+  cercano:"cercano y empático",
+  informativo:"informativo y educativo",
+  urgente:"urgente y llamativo",
+  formal:"formal y corporativo",
+  juvenil:"juvenil y moderno con emojis",
+  romantico:"romántico y emocional",
 };
-const HASHTAGS = {
-  profesional:["#profesional","#negocio","#emprendedor","#trabajo","#éxito","#empresa","#calidad","#servicio","#innovación","#liderazgo","#networking","#productividad"],
-  divertido:["#diversión","#viral","#humor","#trending","#buenasvibraciones","#felicidad","#risas","#entretenimiento","#positivo","#enjoy","#lifestyle","#argentina"],
-  inspiracional:["#motivación","#inspiración","#éxito","#mentalidad","#crecimiento","#superación","#actitud","#sueños","#fuerza","#mindset","#positivo","#logros"],
-  cercano:["#gracias","#comunidad","#familia","#amor","#juntos","#conexión","#corazón","#real","#auténtico","#personas","#vida","#momentos"],
-  informativo:["#sabíasque","#tips","#consejos","#aprendizaje","#educación","#información","#datos","#útil","#conocimiento","#contenido","#aprende","#compartir"],
-  urgente:["#oferta","#promoción","#descuento","#últimashoras","#oportunidad","#ahora","#imperdible","#especial","#limitado","#hoy","#aprovecha","#sale"],
+const COPIES={
+  profesional:["Compartimos con orgullo nuestro trabajo. Cada detalle fue pensado para vos. 💼✨","La excelencia no es un accidente, es el resultado del esfuerzo constante. 🎯"],
+  divertido:["¡Esto es lo que pasa cuando nos ponemos creativos! 😂🎉 ¿Te copa?","Modo creatividad activada al 100% 🔥😜"],
+  inspiracional:["Cada día es una nueva oportunidad para brillar. ✨🌟","Los sueños no tienen fecha de vencimiento. 💫"],
+  cercano:["Queremos compartir este momento especial con vos 🥰","Sin ustedes nada de esto tendría sentido. ❤️"],
+  informativo:["Te contamos todo lo que necesitás saber 👇","Información importante que no podés perderte 📌"],
+  urgente:["⚠️ ¡ÚLTIMAS HORAS! No dejes pasar esta oportunidad.","🚨 Quedan muy pocos lugares. ¡No te quedés afuera!"],
+  formal:["Nos complace presentarles nuestra propuesta de valor. 🏢","Con profesionalismo y compromiso, ponemos a su disposición nuestros servicios. 📋"],
+  juvenil:["¡Esto está re bueno y no podíamos no compartirlo! 🔥✨ dale RT si te suma","vibes de productividad total 💅 esto lo necesitabas en tu vida fr fr 🫶"],
+  romantico:["Hay cosas que el corazón siente antes de que las palabras lleguen... 💕","Porque los momentos más especiales merecen ser compartidos. 🌹✨"],
 };
-const IDEAS_DEFAULT = [
-  {titulo:"Behind the scenes",desc:"Mostrá cómo trabajás día a día",formato:"Reel",emoji:"🎬"},
-  {titulo:"Tip del día",desc:"Compartí un consejo útil de tu área",formato:"Imagen",emoji:"💡"},
-  {titulo:"Antes y después",desc:"Mostrá una transformación impactante",formato:"Carrusel",emoji:"✨"},
-  {titulo:"Pregunta a tu audiencia",desc:"Usá una encuesta para generar interacción",formato:"Story",emoji:"❓"},
-  {titulo:"Testimonio de cliente",desc:"Compartí una experiencia positiva real",formato:"Imagen",emoji:"⭐"},
-  {titulo:"Proceso de trabajo",desc:"Mostrá paso a paso cómo lo hacés",formato:"Reel",emoji:"🔧"},
-  {titulo:"Dato curioso",desc:"Compartí algo sorprendente de tu sector",formato:"Imagen",emoji:"🤔"},
-  {titulo:"Presentación del equipo",desc:"Presentá a las personas detrás del proyecto",formato:"Carrusel",emoji:"👥"},
-];
+const HASHTAGS_BASE=["#huerta","#agroecología","#orgánico","#natural","#sustentable","#agroecológico","#huertaurbana","#alimentosaludable","#vidanatural","#campo","#argentina","#productosnaturales"];
 
-function Card({children,style,onClick}){ return <div onClick={onClick} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:16,padding:16,...style}}>{children}</div>; }
-function Lbl({children}){ return <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>{children}</div>; }
-function Btn({onClick,disabled,children,style}){ return <button onClick={onClick} disabled={disabled} style={{padding:"12px 20px",borderRadius:12,border:"none",background:disabled?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#f093fb,#f5576c)",color:"#fff",fontWeight:700,fontSize:14,cursor:disabled?"not-allowed":"pointer",width:"100%",...style}}>{children}</button>; }
+function Card({children,style,onClick}){return <div onClick={onClick} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:16,padding:16,...style}}>{children}</div>;}
+function Lbl({children}){return <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>{children}</div>;}
+function Btn({onClick,disabled,children,style}){return <button onClick={onClick} disabled={disabled} style={{padding:"12px 20px",borderRadius:12,border:"none",background:disabled?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#00c9a7,#00b4db)",color:disabled?"rgba(255,255,255,0.3)":"#fff",fontWeight:700,fontSize:14,cursor:disabled?"not-allowed":"pointer",width:"100%",...style}}>{children}</button>;}
 
 function App(){
   const [tab,setTab]=useState(0);
@@ -103,78 +89,99 @@ function App(){
   const [calTipo,setCalTipo]=useState("📸 Foto");
   const [ideas,setIdeas]=useState([]);
   const [ideasTopic,setIdeasTopic]=useState("");
-  const [history,setHistory]=useState(()=>{ try{ return JSON.parse(localStorage.getItem("ccs_history")||"[]"); }catch{ return []; } });
+  const [history,setHistory]=useState(()=>{try{return JSON.parse(localStorage.getItem("ccs_history")||"[]");}catch{return [];}});
   const [copied,setCopied]=useState(false);
   const [igTime,setIgTime]=useState(()=>localStorage.getItem("ccs_ig_time")||"18:00");
   const [waTime,setWaTime]=useState(()=>localStorage.getItem("ccs_wa_time")||"08:00");
   const [showConfig,setShowConfig]=useState(false);
+  // Precios
+  const [productos,setProductos]=useState(()=>{try{return JSON.parse(localStorage.getItem("ccs_productos")||"[]");}catch{return [];}});
+  const [showAddProd,setShowAddProd]=useState(false);
+  const [editIdx,setEditIdx]=useState(null);
+  const [prodForm,setProdForm]=useState({nombre:"",descripcion:"",precio:"",mostrarPrecio:true,categoria:"Producto",emoji:"🌱"});
   const fileRef=useRef();
 
+  const CATEGORIAS=["🌱 Producto","🥗 Elaboración","📚 Enseñanza","🌿 Otro"];
+
   const onDrop=useCallback(e=>{
-    e.preventDefault(); setDragging(false);
+    e.preventDefault();setDragging(false);
     const d=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/")||f.type.startsWith("video/"));
-    if(d.length) setFiles(p=>[...p,...d.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
+    if(d.length)setFiles(p=>[...p,...d.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
   },[]);
 
   const onFileChange=e=>{
     const s=Array.from(e.target.files).filter(f=>f.type.startsWith("image/")||f.type.startsWith("video/"));
-    if(s.length) setFiles(p=>[...p,...s.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
+    if(s.length)setFiles(p=>[...p,...s.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
     e.target.value="";
   };
 
   const generateCopy=async()=>{
-    setLoadingCopy(true); setCopy(""); setHashtags([]); setSelTags([]);
-    const prompt=`Sos un experto en marketing digital. Generá un copy para ${platform} con tono ${tone}. ${userText?`Contexto: "${userText}".`:""} Respondé SOLO con JSON sin markdown: {"copy":"...","hashtags":["#uno","#dos",...]} con 12 hashtags en español.`;
+    setLoadingCopy(true);setCopy("");setHashtags([]);setSelTags([]);
+    const toneDesc=TONES[tone]||"profesional";
+    const prompt=`Sos un experto en marketing digital para una Huerta Agroecológica. Generá un copy para ${platform} con tono ${toneDesc}. ${userText?`Contexto: "${userText}".`:""} Respondé SOLO con JSON sin markdown: {"copy":"...","hashtags":["#uno","#dos",...]} con 12 hashtags en español relacionados con huerta, agroecología y naturaleza.`;
     try{
-      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{
-        method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-      });
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
       const data=await res.json();
       const text=data.candidates?.[0]?.content?.parts?.[0]?.text||"";
       const parsed=JSON.parse(text.replace(/```json|```/g,"").trim());
-      setCopy(parsed.copy||""); setHashtags(parsed.hashtags||[]); setSelTags((parsed.hashtags||[]).slice(0,6));
+      setCopy(parsed.copy||"");setHashtags(parsed.hashtags||[]);setSelTags((parsed.hashtags||[]).slice(0,6));
     }catch{
       const pool=COPIES[tone]||COPIES.profesional;
-      const base=pool[Math.floor(Math.random()*pool.length)];
-      setCopy(base+(userText?"\n\n"+userText:""));
-      const tags=[...(HASHTAGS[tone]||[]),...(platform==="instagram"?["#instagram","#reels"]:["#whatsapp","#whatsappbusiness"])];
-      const all=[...new Set(tags)]; setHashtags(all); setSelTags(all.slice(0,6));
+      setCopy(pool[Math.floor(Math.random()*pool.length)]+(userText?"\n\n"+userText:""));
+      setHashtags(HASHTAGS_BASE);setSelTags(HASHTAGS_BASE.slice(0,6));
     }
     setLoadingCopy(false);
   };
 
   const generateIdeas=async()=>{
-    setLoadingIdeas(true); setIdeas([]);
-    const prompt=`Sos un estratega de redes sociales. Generá 8 ideas creativas de contenido para Instagram/WhatsApp. ${ideasTopic?`Rubro: "${ideasTopic}".`:""} Respondé SOLO con JSON sin markdown: {"ideas":[{"titulo":"...","desc":"...","formato":"Reel|Imagen|Carrusel|Story","emoji":"..."},...]}`;
+    setLoadingIdeas(true);setIdeas([]);
+    const prompt=`Sos un estratega de redes sociales para una Huerta Agroecológica Siglo XXI que vende productos, elaboraciones y da clases. Generá 8 ideas creativas de contenido para Instagram/WhatsApp. ${ideasTopic?`Tema específico: "${ideasTopic}".`:""} Respondé SOLO con JSON sin markdown: {"ideas":[{"titulo":"...","desc":"...","formato":"Reel|Imagen|Carrusel|Story","emoji":"..."},...]}`;
     try{
-      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{
-        method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-      });
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
       const data=await res.json();
       const text=data.candidates?.[0]?.content?.parts?.[0]?.text||"";
       const parsed=JSON.parse(text.replace(/```json|```/g,"").trim());
-      setIdeas(parsed.ideas||IDEAS_DEFAULT);
-    }catch{ setIdeas(IDEAS_DEFAULT); }
+      setIdeas(parsed.ideas||[]);
+    }catch{
+      setIdeas([
+        {titulo:"Cosecha del día",desc:"Mostrá qué cosechaste hoy en la huerta",formato:"Reel",emoji:"🥬"},
+        {titulo:"Receta con mis productos",desc:"Preparación simple con ingredientes de la huerta",formato:"Reel",emoji:"🍳"},
+        {titulo:"Tip agroecológico",desc:"Un consejo para cuidar la tierra naturalmente",formato:"Imagen",emoji:"🌱"},
+        {titulo:"Taller del mes",desc:"Presentá tu próximo taller o curso",formato:"Carrusel",emoji:"📚"},
+        {titulo:"Antes y después de la huerta",desc:"Transformación de un espacio en huerta productiva",formato:"Carrusel",emoji:"✨"},
+        {titulo:"¿Sabías que...?",desc:"Dato curioso sobre agroecología",formato:"Imagen",emoji:"🤔"},
+        {titulo:"Elaboración artesanal",desc:"Mostrá cómo preparás una elaboración paso a paso",formato:"Reel",emoji:"🫙"},
+        {titulo:"Testimonio de alumno",desc:"Compartí la experiencia de alguien que tomó tus talleres",formato:"Story",emoji:"⭐"},
+      ]);
+    }
     setLoadingIdeas(false);
   };
 
-  const copyToClipboard=text=>{ navigator.clipboard.writeText(text).then(()=>{ setCopied(true); setTimeout(()=>setCopied(false),2000); }); };
+  const copyToClipboard=text=>{navigator.clipboard.writeText(text).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);});};
+
+  const shareToWhatsApp=()=>{
+    const text=encodeURIComponent(copy+(selTags.length?"\n\n"+selTags.join(" "):""));
+    window.open(`https://wa.me/?text=${text}`,"_blank");
+  };
+
+  const shareToInstagram=()=>{
+    copyToClipboard(copy+(selTags.length?"\n\n"+selTags.join(" "):""));
+    alert("✅ Texto copiado.\n\nAbrí Instagram, creá tu publicación y pegá el texto con el botón pegar.");
+  };
 
   const saveToHistory=()=>{
     const item={id:Date.now(),date:new Date().toLocaleDateString("es-AR"),platform,copy,hashtags:selTags,filter,imgUrl:files[0]?.url||null};
     const updated=[item,...history];
     setHistory(updated);
-    try{ localStorage.setItem("ccs_history",JSON.stringify(updated)); }catch{}
-    setStep(0); setFiles([]); setCopy(""); setHashtags([]); setUserText(""); setFilter("none"); setTextOverlay("");
-    setTab(4);
+    try{localStorage.setItem("ccs_history",JSON.stringify(updated));}catch{}
+    setStep(0);setFiles([]);setCopy("");setHashtags([]);setUserText("");setFilter("none");setTextOverlay("");
+    setTab(5);
   };
 
   const deleteHistory=i=>{
     const updated=history.filter((_,idx)=>idx!==i);
     setHistory(updated);
-    try{ localStorage.setItem("ccs_history",JSON.stringify(updated)); }catch{}
+    try{localStorage.setItem("ccs_history",JSON.stringify(updated));}catch{}
   };
 
   const saveConfig=()=>{
@@ -183,24 +190,42 @@ function App(){
     setShowConfig(false);
   };
 
+  const saveProd=()=>{
+    let updated;
+    if(editIdx!==null){updated=productos.map((p,i)=>i===editIdx?prodForm:p);}
+    else{updated=[...productos,prodForm];}
+    setProductos(updated);
+    try{localStorage.setItem("ccs_productos",JSON.stringify(updated));}catch{}
+    setShowAddProd(false);setEditIdx(null);
+    setProdForm({nombre:"",descripcion:"",precio:"",mostrarPrecio:true,categoria:"🌱 Producto",emoji:"🌱"});
+  };
+
+  const deleteProd=i=>{
+    const updated=productos.filter((_,idx)=>idx!==i);
+    setProductos(updated);
+    try{localStorage.setItem("ccs_productos",JSON.stringify(updated));}catch{}
+  };
+
   const previewImg=files.find(f=>f.file?.type?.startsWith("image/"))?.url;
   const fullText=copy+(selTags.length?"\n\n"+selTags.join(" "):"");
+  const catColors={"🌱 Producto":"rgba(0,201,167,0.2)","🥗 Elaboración":"rgba(255,202,87,0.2)","📚 Enseñanza":"rgba(84,160,255,0.2)","🌿 Otro":"rgba(255,159,243,0.2)"};
+  const catBorders={"🌱 Producto":"#00c9a7","🥗 Elaboración":"#feca57","📚 Enseñanza":"#54a0ff","🌿 Otro":"#ff9ff3"};
 
   return(
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",display:"flex",flexDirection:"column"}}>
+    <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#0a0a0a,#0d1f1a,#0a1628)",display:"flex",flexDirection:"column"}}>
 
       {/* Config Modal */}
       {showConfig&&(
-        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
-          <div style={{background:"#1a1535",borderRadius:20,padding:24,width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,0.15)"}}>
-            <h3 style={{margin:"0 0 16px",fontSize:16}}>⚙️ Configuración de horarios</h3>
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.8)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+          <div style={{background:"#0d1f1a",borderRadius:20,padding:24,width:"100%",maxWidth:340,border:"1px solid rgba(0,201,167,0.3)"}}>
+            <h3 style={{margin:"0 0 16px",fontSize:16}}>⚙️ Configuración</h3>
             <div style={{marginBottom:14}}>
-              <Lbl>📸 Mejor horario Instagram</Lbl>
-              <input type="time" value={igTime} onChange={e=>setIgTime(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:15,boxSizing:"border-box"}}/>
+              <Lbl>📸 Horario Instagram</Lbl>
+              <input type="time" value={igTime} onChange={e=>setIgTime(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.3)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:15,boxSizing:"border-box"}}/>
             </div>
             <div style={{marginBottom:20}}>
-              <Lbl>💬 Mejor horario WhatsApp</Lbl>
-              <input type="time" value={waTime} onChange={e=>setWaTime(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:15,boxSizing:"border-box"}}/>
+              <Lbl>💬 Horario WhatsApp</Lbl>
+              <input type="time" value={waTime} onChange={e=>setWaTime(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.3)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:15,boxSizing:"border-box"}}/>
             </div>
             <div style={{display:"flex",gap:10}}>
               <button onClick={()=>setShowConfig(false)} style={{flex:1,padding:"12px",borderRadius:12,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#fff",fontSize:14,cursor:"pointer"}}>Cancelar</button>
@@ -210,22 +235,62 @@ function App(){
         </div>
       )}
 
-      {/* Header */}
-      <div style={{background:"rgba(255,255,255,0.04)",backdropFilter:"blur(12px)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"14px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <span style={{fontSize:26}}>🎬</span>
-          <div>
-            <div style={{fontWeight:800,fontSize:17,background:"linear-gradient(90deg,#f093fb,#f5576c)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Content Creator Studio</div>
-            <div style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>Creá contenido increíble para tus redes</div>
+      {/* Add/Edit Producto Modal */}
+      {showAddProd&&(
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
+          <div style={{background:"#0d1f1a",borderRadius:20,padding:24,width:"100%",maxWidth:380,border:"1px solid rgba(0,201,167,0.3)"}}>
+            <h3 style={{margin:"0 0 16px",fontSize:16}}>{editIdx!==null?"✏️ Editar":"➕ Agregar"} producto/servicio</h3>
+            <div style={{marginBottom:10}}>
+              <Lbl>Categoría</Lbl>
+              <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                {CATEGORIAS.map(c=><button key={c} onClick={()=>setProdForm(p=>({...p,categoria:c,emoji:c[0]}))} style={{padding:"6px 10px",borderRadius:20,border:`1px solid ${prodForm.categoria===c?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:prodForm.categoria===c?"rgba(0,201,167,0.2)":"transparent",color:prodForm.categoria===c?"#00c9a7":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{c}</button>)}
+              </div>
+            </div>
+            <div style={{marginBottom:10}}>
+              <Lbl>Nombre</Lbl>
+              <input value={prodForm.nombre} onChange={e=>setProdForm(p=>({...p,nombre:e.target.value}))} placeholder="Ej: Lechuga orgánica, Taller de huerta..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:"10px",color:"#fff",fontSize:13,boxSizing:"border-box"}}/>
+            </div>
+            <div style={{marginBottom:10}}>
+              <Lbl>Descripción</Lbl>
+              <textarea value={prodForm.descripcion} onChange={e=>setProdForm(p=>({...p,descripcion:e.target.value}))} placeholder="Describí brevemente..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:"10px",color:"#fff",fontSize:13,boxSizing:"border-box",minHeight:60,resize:"vertical"}}/>
+            </div>
+            <div style={{marginBottom:10,display:"flex",alignItems:"center",gap:10}}>
+              <div style={{flex:1}}>
+                <Lbl>Precio (opcional)</Lbl>
+                <input value={prodForm.precio} onChange={e=>setProdForm(p=>({...p,precio:e.target.value}))} placeholder="Ej: $1500" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:"10px",color:"#fff",fontSize:13,boxSizing:"border-box"}}/>
+              </div>
+              <div style={{flexShrink:0,marginTop:14}}>
+                <Lbl>Mostrar precio</Lbl>
+                <button onClick={()=>setProdForm(p=>({...p,mostrarPrecio:!p.mostrarPrecio}))} style={{padding:"8px 14px",borderRadius:8,border:`1px solid ${prodForm.mostrarPrecio?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:prodForm.mostrarPrecio?"rgba(0,201,167,0.2)":"transparent",color:prodForm.mostrarPrecio?"#00c9a7":"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer"}}>{prodForm.mostrarPrecio?"✅ Sí":"❌ No"}</button>
+              </div>
+            </div>
+            <div style={{display:"flex",gap:10,marginTop:16}}>
+              <button onClick={()=>{setShowAddProd(false);setEditIdx(null);}} style={{flex:1,padding:"12px",borderRadius:12,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#fff",fontSize:14,cursor:"pointer"}}>Cancelar</button>
+              <Btn onClick={saveProd} disabled={!prodForm.nombre} style={{flex:2}}>💾 Guardar</Btn>
+            </div>
           </div>
         </div>
-        <button onClick={()=>setShowConfig(true)} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:10,padding:"8px 12px",fontSize:18,cursor:"pointer"}}>⚙️</button>
+      )}
+
+      {/* Header */}
+      <div style={{background:"rgba(0,0,0,0.4)",backdropFilter:"blur(12px)",borderBottom:"1px solid rgba(0,201,167,0.15)",padding:"14px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <img src="./icon.png" style={{width:38,height:38,borderRadius:"50%",objectFit:"cover",border:"2px solid #00c9a7"}}/>
+          <div>
+            <div className="rainbow" style={{fontSize:15}}>Huerta Agroecológica Siglo XXI</div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>Productos · Elaboraciones · Enseñanza</div>
+          </div>
+        </div>
+        <button onClick={()=>setShowConfig(true)} style={{background:"rgba(0,201,167,0.15)",border:"1px solid rgba(0,201,167,0.3)",color:"#00c9a7",borderRadius:10,padding:"8px 12px",fontSize:18,cursor:"pointer"}}>⚙️</button>
       </div>
 
       {/* Tabs */}
-      <div style={{display:"flex",overflowX:"auto",borderBottom:"1px solid rgba(255,255,255,0.08)",background:"rgba(0,0,0,0.2)",position:"sticky",top:60,zIndex:99}}>
+      <div style={{display:"flex",overflowX:"auto",borderBottom:"1px solid rgba(0,201,167,0.15)",background:"rgba(0,0,0,0.3)",position:"sticky",top:60,zIndex:99}}>
         {TABS.map((t,i)=>(
-          <button key={t} onClick={()=>{setTab(i);if(i===1)setStep(0);}} style={{padding:"11px 14px",border:"none",background:"transparent",color:tab===i?"#f093fb":"rgba(255,255,255,0.45)",fontWeight:tab===i?700:400,fontSize:12,cursor:"pointer",borderBottom:tab===i?"2px solid #f093fb":"2px solid transparent",whiteSpace:"nowrap",flexShrink:0}}>{t}</button>
+          <button key={t} onClick={()=>{setTab(i);if(i===1)setStep(0);}} style={{padding:"10px 14px",border:"none",background:"transparent",color:tab===i?"#00c9a7":"rgba(255,255,255,0.4)",fontWeight:tab===i?700:400,fontSize:13,cursor:"pointer",borderBottom:tab===i?"2px solid #00c9a7":"2px solid transparent",whiteSpace:"nowrap",flexShrink:0,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+            <span>{t}</span>
+            <span style={{fontSize:9}}>{TAB_LABELS[i]}</span>
+          </button>
         ))}
       </div>
 
@@ -234,26 +299,26 @@ function App(){
         {/* INICIO */}
         {tab===0&&(
           <div>
-            <h2 style={{textAlign:"center",marginBottom:4,fontSize:22}}>¡Hola! 👋</h2>
+            <h2 style={{textAlign:"center",marginBottom:4,fontSize:22}}>¡Hola Claudia! 👋🌱</h2>
             <p style={{textAlign:"center",color:"rgba(255,255,255,0.5)",fontSize:13,marginBottom:20}}>¿Qué querés hacer hoy?</p>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
-              {[{icon:"📤",label:"Crear contenido",desc:"Subí archivos y generá copy con IA",t:1},{icon:"📅",label:"Planificar",desc:"Calendario semanal",t:2},{icon:"💡",label:"Ideas con IA",desc:"Generá ideas para publicar",t:3},{icon:"🕐",label:"Historial",desc:"Tu contenido guardado",t:4}].map(item=>(
-                <Card key={item.t} onClick={()=>setTab(item.t)} style={{cursor:"pointer",textAlign:"center"}}>
-                  <div style={{fontSize:30,marginBottom:8}}>{item.icon}</div>
-                  <div style={{fontWeight:700,fontSize:13,marginBottom:3}}>{item.label}</div>
-                  <div style={{fontSize:11,color:"rgba(255,255,255,0.45)"}}>{item.desc}</div>
+              {[{icon:"📤",label:"Crear contenido",desc:"Subí archivos y generá copy con IA",t:1},{icon:"📅",label:"Planificar",desc:"Calendario semanal",t:2},{icon:"💡",label:"Ideas IA",desc:"Ideas para tu huerta",t:3},{icon:"🏷️",label:"Mis precios",desc:"Productos y servicios",t:4},{icon:"🕐",label:"Historial",desc:"Contenido guardado",t:5}].map(item=>(
+                <Card key={item.t} onClick={()=>setTab(item.t)} style={{cursor:"pointer",textAlign:"center",border:"1px solid rgba(0,201,167,0.15)"}}>
+                  <div style={{fontSize:28,marginBottom:6}}>{item.icon}</div>
+                  <div style={{fontWeight:700,fontSize:13,marginBottom:2}}>{item.label}</div>
+                  <div style={{fontSize:11,color:"rgba(255,255,255,0.4)"}}>{item.desc}</div>
                 </Card>
               ))}
             </div>
-            <Card style={{marginBottom:14}}>
+            <Card style={{marginBottom:14,border:"1px solid rgba(0,201,167,0.2)"}}>
               <Lbl>⏰ Mejor horario para publicar hoy</Lbl>
               <div style={{display:"flex",justifyContent:"space-around",marginTop:10}}>
-                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>📸</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>Instagram</div><div style={{fontWeight:700,color:"#f093fb",fontSize:14}}>{igTime} hs</div></div>
-                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>💬</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>WhatsApp</div><div style={{fontWeight:700,color:"#4facfe",fontSize:14}}>{waTime} hs</div></div>
+                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>📸</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>Instagram</div><div style={{fontWeight:700,color:"#00c9a7",fontSize:14}}>{igTime} hs</div></div>
+                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>💬</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>WhatsApp</div><div style={{fontWeight:700,color:"#54a0ff",fontSize:14}}>{waTime} hs</div></div>
               </div>
             </Card>
             {history.length>0&&(
-              <Card>
+              <Card style={{border:"1px solid rgba(0,201,167,0.15)"}}>
                 <Lbl>🕐 Último guardado</Lbl>
                 <div style={{fontSize:13,marginTop:6,color:"rgba(255,255,255,0.7)",lineHeight:1.5}}>{history[0].copy.slice(0,80)}...</div>
                 <div style={{fontSize:11,color:"rgba(255,255,255,0.35)",marginTop:4}}>{history[0].date} · {history[0].platform}</div>
@@ -269,18 +334,17 @@ function App(){
               {STEPS_CREATE.map((s,i)=>(
                 <div key={s} style={{display:"flex",alignItems:"center"}}>
                   <div onClick={()=>i<=step&&setStep(i)} style={{display:"flex",flexDirection:"column",alignItems:"center",cursor:i<=step?"pointer":"default"}}>
-                    <div style={{width:28,height:28,borderRadius:"50%",background:i<=step?"linear-gradient(135deg,#f093fb,#f5576c)":"rgba(255,255,255,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700}}>{i<step?"✓":i+1}</div>
-                    <div style={{fontSize:9,marginTop:3,color:i<=step?"#f093fb":"rgba(255,255,255,0.3)",whiteSpace:"nowrap"}}>{s}</div>
+                    <div style={{width:28,height:28,borderRadius:"50%",background:i<=step?"linear-gradient(135deg,#00c9a7,#00b4db)":"rgba(255,255,255,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700}}>{i<step?"✓":i+1}</div>
+                    <div style={{fontSize:9,marginTop:3,color:i<=step?"#00c9a7":"rgba(255,255,255,0.3)",whiteSpace:"nowrap"}}>{s}</div>
                   </div>
-                  {i<STEPS_CREATE.length-1&&<div style={{width:18,height:2,background:i<step?"linear-gradient(90deg,#f093fb,#f5576c)":"rgba(255,255,255,0.1)",margin:"0 2px",marginBottom:18}}/>}
+                  {i<STEPS_CREATE.length-1&&<div style={{width:18,height:2,background:i<step?"linear-gradient(90deg,#00c9a7,#00b4db)":"rgba(255,255,255,0.1)",margin:"0 2px",marginBottom:18}}/>}
                 </div>
               ))}
             </div>
 
-            {/* Step 0 */}
             {step===0&&(
               <div>
-                <div onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileRef.current.click()} style={{border:`2px dashed ${dragging?"#f093fb":"rgba(255,255,255,0.2)"}`,borderRadius:16,padding:34,textAlign:"center",cursor:"pointer",background:dragging?"rgba(240,147,251,0.1)":"rgba(255,255,255,0.03)",marginBottom:12}}>
+                <div onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileRef.current.click()} style={{border:`2px dashed ${dragging?"#00c9a7":"rgba(255,255,255,0.2)"}`,borderRadius:16,padding:34,textAlign:"center",cursor:"pointer",background:dragging?"rgba(0,201,167,0.1)":"rgba(255,255,255,0.03)",marginBottom:12}}>
                   <div style={{fontSize:34,marginBottom:8}}>📁</div>
                   <div style={{fontSize:15,marginBottom:4}}>Arrastrá archivos acá</div>
                   <div style={{fontSize:12,color:"rgba(255,255,255,0.4)"}}>Fotos y videos · tocá para seleccionar</div>
@@ -296,12 +360,11 @@ function App(){
                     ))}
                   </div>
                 )}
-                <textarea value={userText} onChange={e=>setUserText(e.target.value)} placeholder="Contexto o idea para la publicación (opcional)..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:12,padding:12,color:"#fff",fontSize:14,resize:"vertical",minHeight:70,boxSizing:"border-box",marginBottom:14}}/>
+                <textarea value={userText} onChange={e=>setUserText(e.target.value)} placeholder="Contexto o idea (ej: cosecha de tomates, nuevo taller de huerta...)" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:12,padding:12,color:"#fff",fontSize:14,resize:"vertical",minHeight:70,boxSizing:"border-box",marginBottom:14}}/>
                 <Btn onClick={()=>setStep(1)} disabled={files.length===0&&!userText}>Continuar →</Btn>
               </div>
             )}
 
-            {/* Step 1 */}
             {step===1&&(
               <div>
                 {previewImg&&(
@@ -312,27 +375,19 @@ function App(){
                 <Card style={{marginBottom:12}}>
                   <Lbl>Filtros</Lbl>
                   <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
-                    {FILTERS.map(f=><button key={f.id} onClick={()=>setFilter(f.id)} style={{padding:"8px 4px",borderRadius:8,border:`2px solid ${filter===f.id?"#f093fb":"transparent"}`,background:filter===f.id?"rgba(240,147,251,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer"}}>{f.label}</button>)}
+                    {FILTERS.map(f=><button key={f.id} onClick={()=>setFilter(f.id)} style={{padding:"8px 4px",borderRadius:8,border:`2px solid ${filter===f.id?"#00c9a7":"transparent"}`,background:filter===f.id?"rgba(0,201,167,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer"}}>{f.label}</button>)}
                   </div>
                 </Card>
                 <Card style={{marginBottom:12}}>
                   <Lbl>Formato</Lbl>
                   <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:6}}>
                     {FORMATS.map(f=>(
-                      <button key={f.id} onClick={()=>setFormat(f.id)} style={{padding:"10px 8px",borderRadius:8,border:`2px solid ${format===f.id?"#4facfe":"transparent"}`,background:format===f.id?"rgba(79,172,254,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer",textAlign:"left"}}>
+                      <button key={f.id} onClick={()=>setFormat(f.id)} style={{padding:"10px 8px",borderRadius:8,border:`2px solid ${format===f.id?"#54a0ff":"transparent"}`,background:format===f.id?"rgba(84,160,255,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer",textAlign:"left"}}>
                         <span style={{fontSize:16}}>{f.icon}</span> <strong>{f.label}</strong><br/><span style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>{f.size}px</span>
                       </button>
                     ))}
                   </div>
                 </Card>
-                {files.some(f=>f.file.type.startsWith("video/"))&&(
-                  <Card style={{marginBottom:12}}>
-                    <Lbl>Música del Reel</Lbl>
-                    <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:4}}>
-                      {MOODS.map(m=><button key={m} onClick={()=>setMood(m)} style={{padding:"5px 12px",borderRadius:20,border:`1px solid ${mood===m?"#f5576c":"rgba(255,255,255,0.2)"}`,background:mood===m?"rgba(245,87,108,0.2)":"transparent",color:mood===m?"#f5576c":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{m}</button>)}
-                    </div>
-                  </Card>
-                )}
                 <div style={{display:"flex",gap:10}}>
                   <Btn onClick={()=>setStep(0)} style={{background:"rgba(255,255,255,0.1)",flex:1}}>← Atrás</Btn>
                   <Btn onClick={()=>setStep(2)} style={{flex:2}}>Siguiente →</Btn>
@@ -340,7 +395,6 @@ function App(){
               </div>
             )}
 
-            {/* Step 2 */}
             {step===2&&(
               <div>
                 <div style={{position:"relative",borderRadius:14,overflow:"hidden",aspectRatio:format,background:"#111",maxWidth:240,margin:"0 auto 16px"}}>
@@ -349,7 +403,7 @@ function App(){
                 </div>
                 <Card style={{marginBottom:14}}>
                   <Lbl>Texto sobre la imagen</Lbl>
-                  <input value={textOverlay} onChange={e=>setTextOverlay(e.target.value)} placeholder="Ej: ¡Oferta especial! 🔥" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:10,color:"#fff",fontSize:14,boxSizing:"border-box",marginBottom:10}}/>
+                  <input value={textOverlay} onChange={e=>setTextOverlay(e.target.value)} placeholder="Ej: 🌱 Cosecha de hoy" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:14,boxSizing:"border-box",marginBottom:10}}/>
                   <div style={{display:"flex",gap:12,alignItems:"center"}}>
                     <div style={{flex:1}}><Lbl>Color</Lbl><input type="color" value={overlayColor} onChange={e=>setOverlayColor(e.target.value)} style={{width:"100%",height:36,borderRadius:8,border:"none"}}/></div>
                     <div style={{flex:2}}><Lbl>Tamaño: {overlaySize}px</Lbl><input type="range" min={14} max={52} value={overlaySize} onChange={e=>setOverlaySize(+e.target.value)} style={{width:"100%"}}/></div>
@@ -362,39 +416,38 @@ function App(){
               </div>
             )}
 
-            {/* Step 3 */}
             {step===3&&(
               <div>
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}}>
                   <div>
                     <Lbl>Plataforma</Lbl>
                     <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                      {["instagram","whatsapp"].map(p=><button key={p} onClick={()=>setPlatform(p)} style={{padding:"8px 6px",borderRadius:8,border:`2px solid ${platform===p?"#f093fb":"transparent"}`,background:platform===p?"rgba(240,147,251,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer"}}>{p==="instagram"?"📸 Instagram":"💬 WhatsApp"}</button>)}
+                      {["instagram","whatsapp"].map(p=><button key={p} onClick={()=>setPlatform(p)} style={{padding:"8px 6px",borderRadius:8,border:`2px solid ${platform===p?"#00c9a7":"transparent"}`,background:platform===p?"rgba(0,201,167,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer"}}>{p==="instagram"?"📸 Instagram":"💬 WhatsApp"}</button>)}
                     </div>
                   </div>
                   <div>
                     <Lbl>Tono</Lbl>
-                    <select value={tone} onChange={e=>setTone(e.target.value)} style={{width:"100%",padding:"8px",borderRadius:8,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:13}}>
-                      {Object.keys(COPIES).map(t=><option key={t} value={t}>{t}</option>)}
+                    <select value={tone} onChange={e=>setTone(e.target.value)} style={{width:"100%",padding:"8px",borderRadius:8,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",color:"#fff",fontSize:12}}>
+                      {Object.keys(TONES).map(t=><option key={t} value={t}>{t}</option>)}
                     </select>
                   </div>
                 </div>
-                <Btn onClick={generateCopy} disabled={loadingCopy} style={{background:loadingCopy?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#4facfe,#00f2fe)",marginBottom:14}}>
-                  {loadingCopy?"🤖 Generando con IA...":"🤖 Generar Copy + Hashtags"}
+                <Btn onClick={generateCopy} disabled={loadingCopy} style={{background:loadingCopy?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#54a0ff,#5f27cd)",marginBottom:14}}>
+                  {loadingCopy?"🤖 Generando...":"🤖 Generar Copy + Hashtags"}
                 </Btn>
                 {copy&&(
                   <>
                     <Card style={{marginBottom:12}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
                         <Lbl>Descripción</Lbl>
-                        <button onClick={()=>copyToClipboard(copy)} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:6,padding:"3px 10px",fontSize:11,cursor:"pointer"}}>Copiar</button>
+                        <button onClick={()=>copyToClipboard(copy)} style={{background:"rgba(0,201,167,0.2)",border:"none",color:"#00c9a7",borderRadius:6,padding:"3px 10px",fontSize:11,cursor:"pointer"}}>Copiar</button>
                       </div>
                       <textarea value={copy} onChange={e=>setCopy(e.target.value)} style={{width:"100%",background:"transparent",border:"none",color:"#fff",fontSize:13,lineHeight:1.6,resize:"vertical",minHeight:80,boxSizing:"border-box"}}/>
                     </Card>
                     <Card style={{marginBottom:14}}>
                       <Lbl>Hashtags — tocá para seleccionar</Lbl>
                       <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
-                        {hashtags.map(h=><button key={h} onClick={()=>setSelTags(p=>p.includes(h)?p.filter(x=>x!==h):[...p,h])} style={{padding:"4px 10px",borderRadius:20,border:`1px solid ${selTags.includes(h)?"#f093fb":"rgba(255,255,255,0.2)"}`,background:selTags.includes(h)?"rgba(240,147,251,0.2)":"transparent",color:selTags.includes(h)?"#f093fb":"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer"}}>{h}</button>)}
+                        {hashtags.map(h=><button key={h} onClick={()=>setSelTags(p=>p.includes(h)?p.filter(x=>x!==h):[...p,h])} style={{padding:"4px 10px",borderRadius:20,border:`1px solid ${selTags.includes(h)?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:selTags.includes(h)?"rgba(0,201,167,0.2)":"transparent",color:selTags.includes(h)?"#00c9a7":"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer"}}>{h}</button>)}
                       </div>
                     </Card>
                   </>
@@ -406,7 +459,6 @@ function App(){
               </div>
             )}
 
-            {/* Step 4 */}
             {step===4&&(
               <div>
                 <Card style={{marginBottom:14}}>
@@ -416,15 +468,19 @@ function App(){
                     {textOverlay&&<div style={{position:"absolute",bottom:16,left:0,right:0,textAlign:"center",color:overlayColor,fontSize:Math.max(overlaySize*0.6,12),fontWeight:800,textShadow:"0 2px 8px rgba(0,0,0,0.8)",padding:"0 10px"}}>{textOverlay}</div>}
                   </div>
                   <div style={{fontSize:13,lineHeight:1.6,color:"rgba(255,255,255,0.8)",marginTop:10}}>{copy}</div>
-                  {selTags.length>0&&<div style={{fontSize:12,color:"#4facfe",marginTop:6}}>{selTags.join(" ")}</div>}
+                  {selTags.length>0&&<div style={{fontSize:12,color:"#00c9a7",marginTop:6}}>{selTags.join(" ")}</div>}
                 </Card>
                 <Card style={{marginBottom:14}}>
-                  <Lbl>⏰ Mejor horario para publicar</Lbl>
-                  <div style={{fontWeight:700,color:"#f093fb",fontSize:15,marginTop:4}}>{platform==="instagram"?igTime:waTime} hs</div>
-                  <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",marginTop:2}}>Podés cambiarlo en ⚙️ Configuración</div>
+                  <Lbl>⏰ Mejor horario</Lbl>
+                  <div style={{fontWeight:700,color:"#00c9a7",fontSize:15,marginTop:4}}>{platform==="instagram"?igTime:waTime} hs</div>
                 </Card>
+                {/* Botones compartir */}
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
-                  <button onClick={()=>copyToClipboard(fullText)} style={{padding:"12px 8px",borderRadius:12,border:"none",background:copied?"rgba(79,172,254,0.4)":"linear-gradient(135deg,#667eea,#764ba2)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>{copied?"✅ Copiado!":"📋 Copiar todo"}</button>
+                  <button onClick={shareToInstagram} style={{padding:"12px 8px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>📸 Compartir Instagram</button>
+                  <button onClick={shareToWhatsApp} style={{padding:"12px 8px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#25d366,#128c7e)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>💬 Compartir WhatsApp</button>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+                  <button onClick={()=>copyToClipboard(fullText)} style={{padding:"12px 8px",borderRadius:12,border:"none",background:copied?"rgba(0,201,167,0.3)":"linear-gradient(135deg,#667eea,#764ba2)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>{copied?"✅ Copiado!":"📋 Copiar todo"}</button>
                   {previewImg&&<a href={previewImg} download="mi-contenido.jpg" style={{textDecoration:"none"}}><button style={{width:"100%",padding:"12px 8px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#43e97b,#38f9d7)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>⬇️ Descargar</button></a>}
                 </div>
                 <Btn onClick={saveToHistory} style={{marginBottom:10}}>💾 Guardar en historial</Btn>
@@ -441,32 +497,32 @@ function App(){
             <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:5,marginBottom:20}}>
               {DAYS.map((d,i)=>{
                 const has=calItems[i];
-                return <div key={d} onClick={()=>{setCalDay(calDay===i?null:i);setCalNote(has?.nota||"");setCalTipo(has?.tipo||"📸 Foto");}} style={{background:calDay===i?"rgba(240,147,251,0.2)":has?"rgba(79,172,254,0.12)":"rgba(255,255,255,0.05)",border:`1px solid ${calDay===i?"#f093fb":has?"#4facfe":"rgba(255,255,255,0.1)"}`,borderRadius:10,padding:"10px 2px",textAlign:"center",cursor:"pointer"}}>
+                return <div key={d} onClick={()=>{setCalDay(calDay===i?null:i);setCalNote(has?.nota||"");setCalTipo(has?.tipo||"📸 Foto");}} style={{background:calDay===i?"rgba(0,201,167,0.2)":has?"rgba(84,160,255,0.12)":"rgba(255,255,255,0.05)",border:`1px solid ${calDay===i?"#00c9a7":has?"#54a0ff":"rgba(255,255,255,0.1)"}`,borderRadius:10,padding:"10px 2px",textAlign:"center",cursor:"pointer"}}>
                   <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:4}}>{d}</div>
                   <div style={{fontSize:16}}>{has?has.emoji||"📌":"+"}</div>
-                  {has&&<div style={{fontSize:8,color:"#4facfe",marginTop:2}}>{has.tipo?.split(" ")[1]||""}</div>}
+                  {has&&<div style={{fontSize:8,color:"#54a0ff",marginTop:2}}>{has.tipo?.split(" ")[1]||""}</div>}
                 </div>;
               })}
             </div>
             {calDay!==null&&(
-              <Card style={{marginBottom:16}}>
+              <Card style={{marginBottom:16,border:"1px solid rgba(0,201,167,0.2)"}}>
                 <Lbl>Publicación del {DAYS[calDay]}</Lbl>
-                <input value={calNote} onChange={e=>setCalNote(e.target.value)} placeholder="¿Qué vas a publicar?" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:10,color:"#fff",fontSize:13,boxSizing:"border-box",marginBottom:10}}/>
+                <input value={calNote} onChange={e=>setCalNote(e.target.value)} placeholder="¿Qué vas a publicar?" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:13,boxSizing:"border-box",marginBottom:10}}/>
                 <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
-                  {["📸 Foto","🎬 Reel","📊 Carrusel","📖 Story"].map(t=><button key={t} onClick={()=>setCalTipo(t)} style={{padding:"5px 10px",borderRadius:20,border:`1px solid ${calTipo===t?"#f093fb":"rgba(255,255,255,0.2)"}`,background:calTipo===t?"rgba(240,147,251,0.2)":"transparent",color:calTipo===t?"#f093fb":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{t}</button>)}
+                  {["📸 Foto","🎬 Reel","📊 Carrusel","📖 Story"].map(t=><button key={t} onClick={()=>setCalTipo(t)} style={{padding:"5px 10px",borderRadius:20,border:`1px solid ${calTipo===t?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:calTipo===t?"rgba(0,201,167,0.2)":"transparent",color:calTipo===t?"#00c9a7":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{t}</button>)}
                 </div>
                 <div style={{display:"flex",gap:8}}>
                   <Btn onClick={()=>{setCalItems(p=>({...p,[calDay]:{nota:calNote,tipo:calTipo,emoji:calTipo[0]}}));setCalDay(null);}} style={{flex:2}}>💾 Guardar</Btn>
-                  <Btn onClick={()=>{setCalItems(p=>{const n={...p};delete n[calDay];return n;});setCalDay(null);}} style={{background:"rgba(255,87,87,0.3)",flex:1}}>🗑️ Borrar</Btn>
+                  <Btn onClick={()=>{setCalItems(p=>{const n={...p};delete n[calDay];return n;});setCalDay(null);}} style={{background:"rgba(255,87,87,0.3)",flex:1}}>🗑️</Btn>
                 </div>
               </Card>
             )}
             {Object.keys(calItems).length>0&&(
-              <Card>
+              <Card style={{border:"1px solid rgba(0,201,167,0.15)"}}>
                 <Lbl>Resumen de la semana</Lbl>
                 {Object.entries(calItems).sort(([a],[b])=>a-b).map(([d,v])=>(
                   <div key={d} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
-                    <div style={{width:34,height:34,borderRadius:10,background:"rgba(240,147,251,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{v.emoji}</div>
+                    <div style={{width:34,height:34,borderRadius:10,background:"rgba(0,201,167,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{v.emoji}</div>
                     <div><div style={{fontWeight:600,fontSize:13}}>{DAYS[d]}</div><div style={{fontSize:12,color:"rgba(255,255,255,0.5)"}}>{v.tipo} {v.nota&&`· ${v.nota}`}</div></div>
                   </div>
                 ))}
@@ -478,58 +534,108 @@ function App(){
         {/* IDEAS */}
         {tab===3&&(
           <div>
-            <h2 style={{textAlign:"center",marginBottom:8,fontSize:18}}>💡 Generador de Ideas</h2>
-            <p style={{textAlign:"center",color:"rgba(255,255,255,0.5)",fontSize:13,marginBottom:16}}>Ideas personalizadas con IA para tu contenido</p>
+            <h2 style={{textAlign:"center",marginBottom:8,fontSize:18}}>💡 Ideas para tu Huerta</h2>
+            <p style={{textAlign:"center",color:"rgba(255,255,255,0.5)",fontSize:13,marginBottom:16}}>La IA genera ideas personalizadas para vos</p>
             <div style={{display:"flex",gap:10,marginBottom:14}}>
-              <input value={ideasTopic} onChange={e=>setIdeasTopic(e.target.value)} onKeyDown={e=>e.key==="Enter"&&generateIdeas()} placeholder="Tu rubro (ej: ropa, fitness, cocina...)" style={{flex:1,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:13}}/>
-              <button onClick={generateIdeas} disabled={loadingIdeas} style={{padding:"10px 18px",borderRadius:10,border:"none",background:loadingIdeas?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#f093fb,#f5576c)",color:"#fff",fontWeight:700,fontSize:14,cursor:loadingIdeas?"not-allowed":"pointer",whiteSpace:"nowrap"}}>{loadingIdeas?"⏳...":"✨ Generar"}</button>
+              <input value={ideasTopic} onChange={e=>setIdeasTopic(e.target.value)} onKeyDown={e=>e.key==="Enter"&&generateIdeas()} placeholder="Tema específico (ej: tomates, taller de compostaje...)" style={{flex:1,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:13}}/>
+              <button onClick={generateIdeas} disabled={loadingIdeas} style={{padding:"10px 18px",borderRadius:10,border:"none",background:loadingIdeas?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#00c9a7,#00b4db)",color:"#fff",fontWeight:700,fontSize:14,cursor:loadingIdeas?"not-allowed":"pointer",whiteSpace:"nowrap"}}>{loadingIdeas?"⏳":"✨ Generar"}</button>
             </div>
             {ideas.length>0?(
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {ideas.map((idea,i)=>(
-                  <Card key={i} style={{display:"flex",gap:12,alignItems:"flex-start"}}>
+                  <Card key={i} style={{display:"flex",gap:12,alignItems:"flex-start",border:"1px solid rgba(0,201,167,0.1)"}}>
                     <div style={{fontSize:26,flexShrink:0}}>{idea.emoji}</div>
                     <div style={{flex:1}}>
                       <div style={{fontWeight:700,fontSize:14,marginBottom:4}}>{idea.titulo}</div>
                       <div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:6}}>{idea.desc}</div>
-                      <span style={{fontSize:10,padding:"3px 10px",borderRadius:20,background:"rgba(79,172,254,0.2)",color:"#4facfe"}}>{idea.formato}</span>
+                      <span style={{fontSize:10,padding:"3px 10px",borderRadius:20,background:"rgba(0,201,167,0.2)",color:"#00c9a7"}}>{idea.formato}</span>
                     </div>
-                    <button onClick={()=>{setUserText(idea.desc);setTab(1);setStep(0);}} style={{background:"rgba(240,147,251,0.2)",border:"none",color:"#f093fb",borderRadius:8,padding:"6px 10px",fontSize:11,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Usar →</button>
+                    <button onClick={()=>{setUserText(idea.desc);setTab(1);setStep(0);}} style={{background:"rgba(0,201,167,0.2)",border:"none",color:"#00c9a7",borderRadius:8,padding:"6px 10px",fontSize:11,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Usar →</button>
                   </Card>
                 ))}
               </div>
             ):(
               <div style={{textAlign:"center",padding:40,color:"rgba(255,255,255,0.3)"}}>
-                <div style={{fontSize:40,marginBottom:12}}>🤔</div>
-                <div>Ingresá tu rubro y tocá Generar</div>
+                <div style={{fontSize:40,marginBottom:12}}>🌱</div>
+                <div>Tocá Generar para obtener ideas personalizadas</div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* PRECIOS */}
+        {tab===4&&(
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+              <h2 style={{fontSize:18}}>🏷️ Mis Productos y Servicios</h2>
+              <button onClick={()=>{setShowAddProd(true);setEditIdx(null);setProdForm({nombre:"",descripcion:"",precio:"",mostrarPrecio:true,categoria:"🌱 Producto",emoji:"🌱"});}} style={{background:"linear-gradient(135deg,#00c9a7,#00b4db)",border:"none",color:"#fff",borderRadius:10,padding:"8px 14px",fontSize:13,fontWeight:700,cursor:"pointer"}}>+ Agregar</button>
+            </div>
+            {productos.length===0?(
+              <div style={{textAlign:"center",padding:40,color:"rgba(255,255,255,0.3)"}}>
+                <div style={{fontSize:40,marginBottom:12}}>🌿</div>
+                <div style={{marginBottom:16}}>Todavía no agregaste productos o servicios</div>
+                <button onClick={()=>setShowAddProd(true)} style={{padding:"10px 24px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#00c9a7,#00b4db)",color:"#fff",fontWeight:700,cursor:"pointer"}}>+ Agregar primero</button>
+              </div>
+            ):(
+              <div>
+                {["🌱 Producto","🥗 Elaboración","📚 Enseñanza","🌿 Otro"].map(cat=>{
+                  const items=productos.filter(p=>p.categoria===cat);
+                  if(items.length===0)return null;
+                  return(
+                    <div key={cat} style={{marginBottom:20}}>
+                      <div style={{fontSize:13,fontWeight:700,color:catBorders[cat]||"#00c9a7",marginBottom:8,padding:"4px 0",borderBottom:`1px solid ${catBorders[cat]||"#00c9a7"}30`}}>{cat}</div>
+                      <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                        {items.map((prod,idx)=>{
+                          const realIdx=productos.indexOf(prod);
+                          return(
+                            <Card key={idx} style={{background:catColors[cat]||"rgba(0,201,167,0.1)",border:`1px solid ${catBorders[cat]||"#00c9a7"}30`}}>
+                              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}>
+                                <div style={{flex:1}}>
+                                  <div style={{fontWeight:700,fontSize:14,marginBottom:3}}>{prod.emoji} {prod.nombre}</div>
+                                  {prod.descripcion&&<div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:4,lineHeight:1.4}}>{prod.descripcion}</div>}
+                                  {prod.mostrarPrecio&&prod.precio&&<div style={{fontSize:14,fontWeight:700,color:catBorders[cat]||"#00c9a7"}}>{prod.precio}</div>}
+                                  {!prod.mostrarPrecio&&<div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontStyle:"italic"}}>Precio a consultar</div>}
+                                </div>
+                                <div style={{display:"flex",gap:6,flexShrink:0}}>
+                                  <button onClick={()=>{setEditIdx(realIdx);setProdForm({...prod});setShowAddProd(true);}} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:8,padding:"5px 10px",fontSize:12,cursor:"pointer"}}>✏️</button>
+                                  <button onClick={()=>deleteProd(realIdx)} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:8,padding:"5px 10px",fontSize:12,cursor:"pointer"}}>🗑️</button>
+                                </div>
+                              </div>
+                            </Card>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
         )}
 
         {/* HISTORIAL */}
-        {tab===4&&(
+        {tab===5&&(
           <div>
             <h2 style={{textAlign:"center",marginBottom:16,fontSize:18}}>🕐 Historial</h2>
             {history.length===0?(
               <div style={{textAlign:"center",padding:40,color:"rgba(255,255,255,0.3)"}}>
                 <div style={{fontSize:40,marginBottom:12}}>📂</div>
                 <div style={{marginBottom:16}}>Todavía no guardaste contenido</div>
-                <button onClick={()=>setTab(1)} style={{padding:"10px 24px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#f093fb,#f5576c)",color:"#fff",fontWeight:700,cursor:"pointer"}}>Crear contenido</button>
+                <button onClick={()=>setTab(1)} style={{padding:"10px 24px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#00c9a7,#00b4db)",color:"#fff",fontWeight:700,cursor:"pointer"}}>Crear contenido</button>
               </div>
             ):(
               <div style={{display:"flex",flexDirection:"column",gap:12}}>
                 {history.map((h,i)=>(
-                  <Card key={h.id} style={{display:"flex",gap:12}}>
-                    {h.imgUrl?<img src={h.imgUrl} style={{width:56,height:56,borderRadius:10,objectFit:"cover",flexShrink:0}}/>:<div style={{width:56,height:56,borderRadius:10,background:"rgba(255,255,255,0.05)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>📝</div>}
+                  <Card key={h.id} style={{display:"flex",gap:12,border:"1px solid rgba(0,201,167,0.1)"}}>
+                    {h.imgUrl?<img src={h.imgUrl} style={{width:56,height:56,borderRadius:10,objectFit:"cover",flexShrink:0}}/>:<div style={{width:56,height:56,borderRadius:10,background:"rgba(0,201,167,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>📝</div>}
                     <div style={{flex:1,minWidth:0}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
-                        <span style={{fontSize:11,background:"rgba(240,147,251,0.2)",color:"#f093fb",padding:"2px 8px",borderRadius:10}}>{h.platform}</span>
+                        <span style={{fontSize:11,background:"rgba(0,201,167,0.2)",color:"#00c9a7",padding:"2px 8px",borderRadius:10}}>{h.platform}</span>
                         <span style={{fontSize:10,color:"rgba(255,255,255,0.35)"}}>{h.date}</span>
                       </div>
                       <div style={{fontSize:12,color:"rgba(255,255,255,0.7)",lineHeight:1.4,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{h.copy}</div>
                       <div style={{display:"flex",gap:6,marginTop:6}}>
-                        <button onClick={()=>copyToClipboard(h.copy+"\n\n"+h.hashtags.join(" "))} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer"}}>Copiar</button>
+                        <button onClick={()=>copyToClipboard(h.copy+"\n\n"+h.hashtags.join(" "))} style={{background:"rgba(0,201,167,0.15)",border:"none",color:"#00c9a7",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer"}}>Copiar</button>
                         <button onClick={()=>deleteHistory(i)} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer"}}>Borrar</button>
                       </div>
                     </div>
@@ -544,13 +650,12 @@ function App(){
     </div>
   );
 }
-
-ReactDOM.render(React.createElement(App), document.getElementById("root"));
+ReactDOM.render(React.createElement(App),document.getElementById("root"));
 </script>
 <script>
   if("serviceWorker" in navigator){
     window.addEventListener("load",()=>{
-      navigator.serviceWorker.register("/sw.js").then(r=>console.log("SW OK:",r.scope)).catch(e=>console.log("SW error:",e));
+      navigator.serviceWorker.register("/sw.js").catch(e=>console.log("SW:",e));
     });
   }
 </script>
