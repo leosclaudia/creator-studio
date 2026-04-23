@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Huerta Agroecológica Siglo XXI</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#00c9a7" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Huerta SXXI" />
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#00c9a7"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Huerta SXXI"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -27,16 +26,15 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const {useState,useRef,useCallback,useEffect}=React;
+const {useState,useRef,useCallback}=React;
 const GEMINI_KEY="AIzaSyALbDopwj32v53odOvgML4c5vgJCBLefgo";
 const TABS=["🏠","📤","🎨","📅","💡","🏷️","🕐"];
 const TAB_LABELS=["Inicio","Crear","Diseño","Calendario","Ideas","Precios","Historial"];
 const DAYS=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
 const FILTERS=[{id:"none",label:"Original"},{id:"brightness(1.2) contrast(1.1)",label:"Vibrante"},{id:"grayscale(1)",label:"B&N"},{id:"saturate(1.8)",label:"Saturado"},{id:"contrast(1.3) brightness(0.9)",label:"Dramático"},{id:"sepia(0.6)",label:"Vintage"}];
 const FORMATS=[{id:"1/1",label:"Feed",size:"1080x1080",icon:"⬛",w:1080,h:1080},{id:"9/16",label:"Reel",size:"1080x1920",icon:"📱",w:1080,h:1920},{id:"16/9",label:"Portada",size:"1200x630",icon:"🖥️",w:1200,h:630},{id:"4/5",label:"Portrait",size:"1080x1350",icon:"📸",w:1080,h:1350}];
-const FONTS=["system-ui","Georgia, serif","'Courier New', monospace","Impact, fantasy","Verdana, sans-serif","'Trebuchet MS', sans-serif","Arial Rounded MT Bold, sans-serif"];
+const FONTS=["system-ui","Georgia,serif","'Courier New',monospace","Impact,fantasy","Verdana,sans-serif","'Trebuchet MS',sans-serif","Arial Rounded MT Bold,sans-serif"];
 const FONT_LABELS=["Sistema","Clásica","Typewriter","Impacto","Verdana","Trebuchet","Redondeada"];
-const MOODS=["Energética 🔥","Tranquila 🌊","Romántica 💕","Motivacional 💪","Divertida 😂"];
 const STEPS_CREATE=["📤 Subir","✨ Mejorar","🖊️ Texto","✍️ Copy","📲 Exportar"];
 const TONES={profesional:"profesional y serio",divertido:"divertido y con humor",inspiracional:"inspiracional y motivador",cercano:"cercano y empático",informativo:"informativo y educativo",urgente:"urgente y llamativo",formal:"formal y corporativo",juvenil:"juvenil y moderno con emojis",romantico:"romántico y emocional"};
 const COPIES={
@@ -46,7 +44,7 @@ const COPIES={
   cercano:["Queremos compartir este momento especial con vos 🥰","Sin ustedes nada de esto tendría sentido. ❤️"],
   informativo:["Te contamos todo lo que necesitás saber 👇","Información importante que no podés perderte 📌"],
   urgente:["⚠️ ¡ÚLTIMAS HORAS! No dejes pasar esta oportunidad.","🚨 Quedan muy pocos lugares. ¡No te quedés afuera!"],
-  formal:["Nos complace presentarles nuestra propuesta. 🏢","Con profesionalismo ponemos a su disposición nuestros servicios. 📋"],
+  formal:["Nos complace presentarles nuestra propuesta. 🏢","Con profesionalismo ponemos a disposición nuestros servicios. 📋"],
   juvenil:["¡Esto está re bueno! 🔥✨ dale si te suma","vibes de naturaleza total 💅 esto lo necesitabas fr 🫶"],
   romantico:["Hay cosas que el corazón siente antes que las palabras... 💕","Porque los momentos especiales merecen ser compartidos. 🌹✨"],
 };
@@ -54,14 +52,30 @@ const HASHTAGS_BASE=["#huerta","#agroecología","#orgánico","#natural","#susten
 const CATEGORIAS=["🌱 Producto","🥗 Elaboración","📚 Enseñanza","🌿 Otro"];
 const catColors={"🌱 Producto":"rgba(0,201,167,0.2)","🥗 Elaboración":"rgba(255,202,87,0.2)","📚 Enseñanza":"rgba(84,160,255,0.2)","🌿 Otro":"rgba(255,159,243,0.2)"};
 const catBorders={"🌱 Producto":"#00c9a7","🥗 Elaboración":"#feca57","📚 Enseñanza":"#54a0ff","🌿 Otro":"#ff9ff3"};
-
 const SOCIAL_SIZES=[
-  {label:"Instagram Feed",w:1080,h:1080,icon:"📸"},
-  {label:"Instagram Story/Reel",w:1080,h:1920,icon:"📱"},
-  {label:"Instagram Portrait",w:1080,h:1350,icon:"🖼️"},
-  {label:"WhatsApp Estado",w:1080,h:1920,icon:"💬"},
-  {label:"Facebook Post",w:1200,h:630,icon:"👍"},
-  {label:"YouTube Miniatura",w:1280,h:720,icon:"▶️"},
+  {label:"Instagram Feed",w:1080,h:1080,icon:"📸"},{label:"Instagram Story/Reel",w:1080,h:1920,icon:"📱"},
+  {label:"Instagram Portrait",w:1080,h:1350,icon:"🖼️"},{label:"WhatsApp Estado",w:1080,h:1920,icon:"💬"},
+  {label:"Facebook Post",w:1200,h:630,icon:"👍"},{label:"YouTube Miniatura",w:1280,h:720,icon:"▶️"},
+];
+// Paleta oficial de la huerta
+const BRAND_PALETTE=[
+  {name:"Verde Principal",hex:"#4CAF50",desc:"Color principal de la marca"},
+  {name:"Verde Oscuro",hex:"#2E7D32",desc:"Para textos y bordes"},
+  {name:"Verde Claro",hex:"#81C784",desc:"Para fondos suaves"},
+  {name:"Blanco",hex:"#FFFFFF",desc:"Para texto sobre verde"},
+  {name:"Verde Menta",hex:"#00c9a7",desc:"Acento digital"},
+  {name:"Tierra",hex:"#795548",desc:"Para acentos naturales"},
+  {name:"Cielo",hex:"#B3E5FC",desc:"Para fondos frescos"},
+  {name:"Amarillo Natural",hex:"#F9A825",desc:"Para destacar"},
+];
+// Templates de stories
+const STORY_TEMPLATES=[
+  {id:"cosecha",label:"🥬 Cosecha del día",bg:"#2E7D32",accent:"#81C784",title:"COSECHA DEL DÍA",subtitle:"Directo de nuestra huerta a tu mesa"},
+  {id:"taller",label:"📚 Taller",bg:"#1565C0",accent:"#42A5F5",title:"NUEVO TALLER",subtitle:"Aprendé agroecología con nosotros"},
+  {id:"producto",label:"🌱 Producto",bg:"#4CAF50",accent:"#FFFFFF",title:"PRODUCTO FRESCO",subtitle:"Orgánico · Natural · Sustentable"},
+  {id:"oferta",label:"🏷️ Oferta",bg:"#E65100",accent:"#FFD54F",title:"OFERTA ESPECIAL",subtitle:"¡Solo por hoy en la Huerta SXXI!"},
+  {id:"tip",label:"💡 Tip",bg:"#6A1B9A",accent:"#CE93D8",title:"TIP AGROECOLÓGICO",subtitle:"Cuidá tu tierra, cuidá tu vida"},
+  {id:"evento",label:"📅 Evento",bg:"#00695C",accent:"#80CBC4",title:"PRÓXIMO EVENTO",subtitle:"Huerta Agroecológica Siglo XXI"},
 ];
 
 function Card({children,style,onClick}){return <div onClick={onClick} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:16,padding:16,...style}}>{children}</div>;}
@@ -84,7 +98,6 @@ function App(){
   const [selTags,setSelTags]=useState([]);
   const [tone,setTone]=useState("profesional");
   const [platform,setPlatform]=useState("instagram");
-  const [mood,setMood]=useState("Energética 🔥");
   const [dragging,setDragging]=useState(false);
   const [loadingCopy,setLoadingCopy]=useState(false);
   const [loadingIdeas,setLoadingIdeas]=useState(false);
@@ -94,17 +107,17 @@ function App(){
   const [calTipo,setCalTipo]=useState("📸 Foto");
   const [ideas,setIdeas]=useState([]);
   const [ideasTopic,setIdeasTopic]=useState("");
-  const [history,setHistory]=useState(()=>{try{return JSON.parse(localStorage.getItem("ccs_history")||"[]");}catch{return [];}});
+  const [history,setHistory]=useState(()=>{try{return JSON.parse(localStorage.getItem("ccs_history")||"[]");}catch{return[];}});
   const [copied,setCopied]=useState(false);
   const [igTime,setIgTime]=useState(()=>localStorage.getItem("ccs_ig_time")||"18:00");
   const [waTime,setWaTime]=useState(()=>localStorage.getItem("ccs_wa_time")||"08:00");
   const [showConfig,setShowConfig]=useState(false);
-  const [productos,setProductos]=useState(()=>{try{return JSON.parse(localStorage.getItem("ccs_productos")||"[]");}catch{return [];}});
+  const [productos,setProductos]=useState(()=>{try{return JSON.parse(localStorage.getItem("ccs_productos")||"[]");}catch{return[];}});
   const [showAddProd,setShowAddProd]=useState(false);
   const [editIdx,setEditIdx]=useState(null);
   const [prodForm,setProdForm]=useState({nombre:"",descripcion:"",precio:"",mostrarPrecio:true,categoria:"🌱 Producto",emoji:"🌱"});
   // Diseño
-  const [designTab,setDesignTab]=useState(0); // 0=redimensionar, 1=collage, 2=tipografias
+  const [designTab,setDesignTab]=useState(0);
   const [resizeImg,setResizeImg]=useState(null);
   const [resizeSize,setResizeSize]=useState(SOCIAL_SIZES[0]);
   const [resizeResult,setResizeResult]=useState(null);
@@ -115,10 +128,26 @@ function App(){
   const [typoColor,setTypoColor]=useState("#00c9a7");
   const [typoBg,setTypoBg]=useState("#0a0a0a");
   const [typoSize,setTypoSize]=useState(40);
+  // Stories
+  const [storyTpl,setStoryTpl]=useState(STORY_TEMPLATES[0]);
+  const [storyTitle,setStoryTitle]=useState("");
+  const [storySubtitle,setStorySubtitle]=useState("");
+  const [storyExtra,setStoryExtra]=useState("");
+  const [storyResult,setStoryResult]=useState(null);
+  // Filtros custom
+  const [customFilters,setCustomFilters]=useState(()=>{try{return JSON.parse(localStorage.getItem("ccs_custom_filters")||"[]");}catch{return[];}});
+  const [cfName,setCfName]=useState("");
+  const [cfBright,setCfBright]=useState(100);
+  const [cfContrast,setCfContrast]=useState(100);
+  const [cfSaturate,setCfSaturate]=useState(100);
+  const [cfSepia,setCfSepia]=useState(0);
+  const [cfHue,setCfHue]=useState(0);
+  const [cfPreviewImg,setCfPreviewImg]=useState(null);
+
   const fileRef=useRef();
   const resizeRef=useRef();
   const collageRef=useRef();
-  const canvasRef=useRef();
+  const cfImgRef=useRef();
 
   const onDrop=useCallback(e=>{
     e.preventDefault();setDragging(false);
@@ -133,7 +162,7 @@ function App(){
 
   const generateCopy=async()=>{
     setLoadingCopy(true);setCopy("");setHashtags([]);setSelTags([]);
-    const prompt=`Sos un experto en marketing para una Huerta Agroecológica. Generá un copy para ${platform} con tono ${TONES[tone]||"profesional"}. ${userText?`Contexto: "${userText}".`:""} SOLO JSON sin markdown: {"copy":"...","hashtags":["#uno",...]} con 12 hashtags de huerta y agroecología.`;
+    const prompt=`Experto en marketing para Huerta Agroecológica. Copy para ${platform} con tono ${TONES[tone]||"profesional"}. ${userText?`Contexto: "${userText}".`:""} SOLO JSON: {"copy":"...","hashtags":["#uno",...]} 12 hashtags de huerta/agroecología.`;
     try{
       const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
       const data=await res.json();
@@ -150,7 +179,7 @@ function App(){
 
   const generateIdeas=async()=>{
     setLoadingIdeas(true);setIdeas([]);
-    const prompt=`Estratega de redes para Huerta Agroecológica Siglo XXI (productos, elaboraciones, talleres). Generá 8 ideas de contenido. ${ideasTopic?`Tema: "${ideasTopic}".`:""} SOLO JSON: {"ideas":[{"titulo":"...","desc":"...","formato":"Reel|Imagen|Carrusel|Story","emoji":"..."},...]}`;
+    const prompt=`Estratega redes para Huerta Agroecológica Siglo XXI (productos, elaboraciones, talleres). 8 ideas de contenido. ${ideasTopic?`Tema: "${ideasTopic}".`:""} SOLO JSON: {"ideas":[{"titulo":"...","desc":"...","formato":"Reel|Imagen|Carrusel|Story","emoji":"..."},...]}`;
     try{
       const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
       const data=await res.json();
@@ -172,37 +201,34 @@ function App(){
     setLoadingIdeas(false);
   };
 
-  // REDIMENSIONAR
   const handleResize=()=>{
     if(!resizeImg)return;
     const canvas=document.createElement("canvas");
-    canvas.width=resizeSize.w; canvas.height=resizeSize.h;
+    canvas.width=resizeSize.w;canvas.height=resizeSize.h;
     const ctx=canvas.getContext("2d");
     const img=new Image();
     img.onload=()=>{
-      ctx.fillStyle="#000"; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle="#000";ctx.fillRect(0,0,canvas.width,canvas.height);
       const scale=Math.max(canvas.width/img.width,canvas.height/img.height);
-      const x=(canvas.width-img.width*scale)/2;
-      const y=(canvas.height-img.height*scale)/2;
+      const x=(canvas.width-img.width*scale)/2;const y=(canvas.height-img.height*scale)/2;
       ctx.drawImage(img,x,y,img.width*scale,img.height*scale);
       setResizeResult(canvas.toDataURL("image/jpeg",0.92));
     };
     img.src=resizeImg;
   };
 
-  // COLLAGE
   const handleCollage=()=>{
     if(collageImgs.length<2)return;
     const canvas=document.createElement("canvas");
-    const size=1080; canvas.width=size; canvas.height=size;
+    const size=1080;canvas.width=size;canvas.height=size;
     const ctx=canvas.getContext("2d");
-    ctx.fillStyle="#0a0a0a"; ctx.fillRect(0,0,size,size);
+    ctx.fillStyle="#0a0a0a";ctx.fillRect(0,0,size,size);
     const gap=8;
-    const loadImg=(src)=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.src=src;});
+    const loadImg=src=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.src=src;});
     const drawImg=(img,x,y,w,h)=>{
       const scale=Math.max(w/img.width,h/img.height);
-      const sx=(img.width*scale-w)/2; const sy=(img.height*scale-h)/2;
-      ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip();
+      const sx=(img.width*scale-w)/2;const sy=(img.height*scale-h)/2;
+      ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
       ctx.drawImage(img,-sx+x,-sy+y,img.width*scale,img.height*scale);
       ctx.restore();
     };
@@ -213,12 +239,12 @@ function App(){
         if(imgs[1])drawImg(imgs[1],gap*2+half,gap,half,half);
         if(imgs[2])drawImg(imgs[2],gap,gap*2+half,half,half);
         if(imgs[3])drawImg(imgs[3],gap*2+half,gap*2+half,half,half);
-      } else if(collageLayout==="1+2"){
-        const bigH=(size-gap*2)*0.6; const smH=size-bigH-gap*3;
+      }else if(collageLayout==="1+2"){
+        const bigH=(size-gap*2)*0.6;const smH=size-bigH-gap*3;
         if(imgs[0])drawImg(imgs[0],gap,gap,size-gap*2,bigH);
         if(imgs[1])drawImg(imgs[1],gap,bigH+gap*2,half,smH);
         if(imgs[2])drawImg(imgs[2],gap*2+half,bigH+gap*2,half,smH);
-      } else {
+      }else{
         const w=(size-gap*4)/3;
         imgs.slice(0,3).forEach((img,i)=>{if(img)drawImg(img,gap+i*(w+gap),gap,w,size-gap*2);});
       }
@@ -226,17 +252,76 @@ function App(){
     });
   };
 
+  const generateStory=()=>{
+    const canvas=document.createElement("canvas");
+    canvas.width=1080;canvas.height=1920;
+    const ctx=canvas.getContext("2d");
+    // Fondo degradado
+    const grad=ctx.createLinearGradient(0,0,0,1920);
+    grad.addColorStop(0,storyTpl.bg);
+    grad.addColorStop(1,"#000");
+    ctx.fillStyle=grad;ctx.fillRect(0,0,1080,1920);
+    // Círculo decorativo
+    ctx.beginPath();ctx.arc(540,960,420,0,Math.PI*2);
+    ctx.strokeStyle=storyTpl.accent+"40";ctx.lineWidth=80;ctx.stroke();
+    ctx.beginPath();ctx.arc(540,960,300,0,Math.PI*2);
+    ctx.strokeStyle=storyTpl.accent+"20";ctx.lineWidth=40;ctx.stroke();
+    // Logo placeholder
+    ctx.fillStyle=storyTpl.accent;ctx.beginPath();ctx.arc(540,400,100,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#fff";ctx.font="bold 80px system-ui";ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText("S",540,400);
+    // Título
+    ctx.fillStyle="#fff";ctx.font="bold 80px system-ui";ctx.textAlign="center";
+    ctx.fillText(storyTitle||storyTpl.title,540,700);
+    // Línea decorativa
+    ctx.fillStyle=storyTpl.accent;ctx.fillRect(390,760,300,6);
+    // Subtítulo
+    ctx.fillStyle=storyTpl.accent;ctx.font="40px system-ui";
+    ctx.fillText(storySubtitle||storyTpl.subtitle,540,840);
+    // Texto extra
+    if(storyExtra){
+      ctx.fillStyle="#fff";ctx.font="52px system-ui";
+      const words=storyExtra.split(" ");let line="";let y=1050;
+      words.forEach(w=>{
+        const test=line+w+" ";
+        if(ctx.measureText(test).width>900&&line){ctx.fillText(line.trim(),540,y);line=w+" ";y+=70;}
+        else line=test;
+      });
+      if(line)ctx.fillText(line.trim(),540,y);
+    }
+    // Footer
+    ctx.fillStyle=storyTpl.accent+"80";ctx.fillRect(0,1780,1080,140);
+    ctx.fillStyle="#fff";ctx.font="bold 44px system-ui";
+    ctx.fillText("Huerta Agroecológica Siglo XXI",540,1860);
+    setStoryResult(canvas.toDataURL("image/png"));
+  };
+
+  const customFilterStr=`brightness(${cfBright}%) contrast(${cfContrast}%) saturate(${cfSaturate}%) sepia(${cfSepia}%) hue-rotate(${cfHue}deg)`;
+
+  const saveCustomFilter=()=>{
+    if(!cfName.trim())return;
+    const f={name:cfName,filter:customFilterStr,bright:cfBright,contrast:cfContrast,saturate:cfSaturate,sepia:cfSepia,hue:cfHue};
+    const updated=[...customFilters,f];
+    setCustomFilters(updated);
+    try{localStorage.setItem("ccs_custom_filters",JSON.stringify(updated));}catch{}
+    setCfName("");
+  };
+
+  const deleteCustomFilter=i=>{
+    const updated=customFilters.filter((_,idx)=>idx!==i);
+    setCustomFilters(updated);
+    try{localStorage.setItem("ccs_custom_filters",JSON.stringify(updated));}catch{}
+  };
+
   const copyToClipboard=text=>{navigator.clipboard.writeText(text).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);});};
   const shareToWhatsApp=()=>{const t=encodeURIComponent(copy+(selTags.length?"\n\n"+selTags.join(" "):""));window.open(`https://wa.me/?text=${t}`,"_blank");};
-  const shareToInstagram=()=>{copyToClipboard(copy+(selTags.length?"\n\n"+selTags.join(" "):""));alert("✅ Texto copiado.\n\nAbrí Instagram, creá tu publicación y pegá el texto.");};
+  const shareToInstagram=()=>{copyToClipboard(copy+(selTags.length?"\n\n"+selTags.join(" "):""));alert("✅ Texto copiado.\n\nAbrí Instagram y pegá el texto en tu publicación.");};
 
   const saveToHistory=()=>{
     const item={id:Date.now(),date:new Date().toLocaleDateString("es-AR"),platform,copy,hashtags:selTags,filter,imgUrl:files[0]?.url||null};
-    const updated=[item,...history];
-    setHistory(updated);
+    const updated=[item,...history];setHistory(updated);
     try{localStorage.setItem("ccs_history",JSON.stringify(updated));}catch{}
-    setStep(0);setFiles([]);setCopy("");setHashtags([]);setUserText("");setFilter("none");setTextOverlay("");
-    setTab(6);
+    setStep(0);setFiles([]);setCopy("");setHashtags([]);setUserText("");setFilter("none");setTextOverlay("");setTab(6);
   };
   const deleteHistory=i=>{const u=history.filter((_,idx)=>idx!==i);setHistory(u);try{localStorage.setItem("ccs_history",JSON.stringify(u));}catch{}};
   const saveConfig=()=>{localStorage.setItem("ccs_ig_time",igTime);localStorage.setItem("ccs_wa_time",waTime);setShowConfig(false);};
@@ -249,6 +334,7 @@ function App(){
 
   const previewImg=files.find(f=>f.file?.type?.startsWith("image/"))?.url;
   const fullText=copy+(selTags.length?"\n\n"+selTags.join(" "):"");
+  const allFilters=[...FILTERS,...customFilters.map(f=>({id:f.filter,label:"⭐ "+f.name}))];
 
   return(
     <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#0a0a0a,#0d1f1a,#0a1628)",display:"flex",flexDirection:"column"}}>
@@ -272,13 +358,13 @@ function App(){
       {showAddProd&&(
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16,overflowY:"auto"}}>
           <div style={{background:"#0d1f1a",borderRadius:20,padding:24,width:"100%",maxWidth:380,border:"1px solid rgba(0,201,167,0.3)"}}>
-            <h3 style={{margin:"0 0 16px"}}>{editIdx!==null?"✏️ Editar":"➕ Agregar"} producto/servicio</h3>
+            <h3 style={{margin:"0 0 16px"}}>{editIdx!==null?"✏️ Editar":"➕ Agregar"}</h3>
             <div style={{marginBottom:10}}><Lbl>Categoría</Lbl><div style={{display:"flex",flexWrap:"wrap",gap:6}}>{CATEGORIAS.map(c=><button key={c} onClick={()=>setProdForm(p=>({...p,categoria:c,emoji:c[0]}))} style={{padding:"6px 10px",borderRadius:20,border:`1px solid ${prodForm.categoria===c?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:prodForm.categoria===c?"rgba(0,201,167,0.2)":"transparent",color:prodForm.categoria===c?"#00c9a7":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{c}</button>)}</div></div>
             <div style={{marginBottom:10}}><Lbl>Nombre</Lbl><input value={prodForm.nombre} onChange={e=>setProdForm(p=>({...p,nombre:e.target.value}))} placeholder="Ej: Lechuga orgánica..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:"10px",color:"#fff",fontSize:13,boxSizing:"border-box"}}/></div>
             <div style={{marginBottom:10}}><Lbl>Descripción</Lbl><textarea value={prodForm.descripcion} onChange={e=>setProdForm(p=>({...p,descripcion:e.target.value}))} placeholder="Describí brevemente..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:"10px",color:"#fff",fontSize:13,boxSizing:"border-box",minHeight:60,resize:"vertical"}}/></div>
             <div style={{marginBottom:10,display:"flex",gap:10,alignItems:"flex-end"}}>
-              <div style={{flex:1}}><Lbl>Precio (opcional)</Lbl><input value={prodForm.precio} onChange={e=>setProdForm(p=>({...p,precio:e.target.value}))} placeholder="Ej: $1500" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:"10px",color:"#fff",fontSize:13,boxSizing:"border-box"}}/></div>
-              <div><Lbl>Mostrar precio</Lbl><button onClick={()=>setProdForm(p=>({...p,mostrarPrecio:!p.mostrarPrecio}))} style={{padding:"8px 14px",borderRadius:8,border:`1px solid ${prodForm.mostrarPrecio?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:prodForm.mostrarPrecio?"rgba(0,201,167,0.2)":"transparent",color:prodForm.mostrarPrecio?"#00c9a7":"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer"}}>{prodForm.mostrarPrecio?"✅ Sí":"❌ No"}</button></div>
+              <div style={{flex:1}}><Lbl>Precio</Lbl><input value={prodForm.precio} onChange={e=>setProdForm(p=>({...p,precio:e.target.value}))} placeholder="Ej: $1500" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:"10px",color:"#fff",fontSize:13,boxSizing:"border-box"}}/></div>
+              <div><Lbl>Mostrar</Lbl><button onClick={()=>setProdForm(p=>({...p,mostrarPrecio:!p.mostrarPrecio}))} style={{padding:"8px 14px",borderRadius:8,border:`1px solid ${prodForm.mostrarPrecio?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:prodForm.mostrarPrecio?"rgba(0,201,167,0.2)":"transparent",color:prodForm.mostrarPrecio?"#00c9a7":"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer"}}>{prodForm.mostrarPrecio?"✅ Sí":"❌ No"}</button></div>
             </div>
             <div style={{display:"flex",gap:10,marginTop:16}}>
               <button onClick={()=>{setShowAddProd(false);setEditIdx(null);}} style={{flex:1,padding:"12px",borderRadius:12,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#fff",fontSize:14,cursor:"pointer"}}>Cancelar</button>
@@ -304,8 +390,7 @@ function App(){
       <div style={{display:"flex",overflowX:"auto",borderBottom:"1px solid rgba(0,201,167,0.15)",background:"rgba(0,0,0,0.3)",position:"sticky",top:62,zIndex:99}}>
         {TABS.map((t,i)=>(
           <button key={t} onClick={()=>{setTab(i);if(i===1)setStep(0);}} style={{padding:"8px 12px",border:"none",background:"transparent",color:tab===i?"#00c9a7":"rgba(255,255,255,0.4)",fontWeight:tab===i?700:400,fontSize:12,cursor:"pointer",borderBottom:tab===i?"2px solid #00c9a7":"2px solid transparent",whiteSpace:"nowrap",flexShrink:0,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-            <span style={{fontSize:16}}>{t}</span>
-            <span style={{fontSize:9}}>{TAB_LABELS[i]}</span>
+            <span style={{fontSize:16}}>{t}</span><span style={{fontSize:9}}>{TAB_LABELS[i]}</span>
           </button>
         ))}
       </div>
@@ -336,118 +421,6 @@ function App(){
           </div>
         )}
 
-        {/* DISEÑO */}
-        {tab===2&&(
-          <div>
-            <h2 style={{textAlign:"center",marginBottom:16,fontSize:18}}>🎨 Herramientas de Diseño</h2>
-            <div style={{display:"flex",gap:6,marginBottom:20,overflowX:"auto"}}>
-              {["📐 Redimensionar","🖼️ Collage","🔤 Tipografías"].map((t,i)=>(
-                <button key={t} onClick={()=>setDesignTab(i)} style={{padding:"8px 14px",borderRadius:20,border:`1px solid ${designTab===i?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:designTab===i?"rgba(0,201,167,0.2)":"transparent",color:designTab===i?"#00c9a7":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer",whiteSpace:"nowrap",fontWeight:designTab===i?700:400}}>{t}</button>
-              ))}
-            </div>
-
-            {/* REDIMENSIONAR */}
-            {designTab===0&&(
-              <div>
-                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Redimensioná tu imagen al tamaño exacto para cada red social</p>
-                <div onClick={()=>resizeRef.current.click()} style={{border:"2px dashed rgba(0,201,167,0.3)",borderRadius:16,padding:30,textAlign:"center",cursor:"pointer",background:"rgba(0,201,167,0.05)",marginBottom:14}}>
-                  {resizeImg?<img src={resizeImg} style={{maxWidth:"100%",maxHeight:200,borderRadius:10,objectFit:"contain"}}/>:<><div style={{fontSize:34,marginBottom:8}}>📁</div><div style={{fontSize:14}}>Tocá para seleccionar imagen</div></>}
-                  <input ref={resizeRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{if(e.target.files[0])setResizeImg(URL.createObjectURL(e.target.files[0]));setResizeResult(null);}}/>
-                </div>
-                <Card style={{marginBottom:14}}>
-                  <Lbl>Formato destino</Lbl>
-                  <div style={{display:"flex",flexDirection:"column",gap:6}}>
-                    {SOCIAL_SIZES.map(s=>(
-                      <button key={s.label} onClick={()=>setResizeSize(s)} style={{padding:"10px 14px",borderRadius:10,border:`1px solid ${resizeSize.label===s.label?"#00c9a7":"rgba(255,255,255,0.1)"}`,background:resizeSize.label===s.label?"rgba(0,201,167,0.15)":"rgba(255,255,255,0.04)",color:"#fff",fontSize:13,cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                        <span>{s.icon} {s.label}</span>
-                        <span style={{fontSize:11,color:"rgba(255,255,255,0.4)"}}>{s.w}×{s.h}</span>
-                      </button>
-                    ))}
-                  </div>
-                </Card>
-                <Btn onClick={handleResize} disabled={!resizeImg} style={{marginBottom:14}}>📐 Redimensionar</Btn>
-                {resizeResult&&(
-                  <Card style={{textAlign:"center"}}>
-                    <Lbl>✅ Resultado — {resizeSize.label}</Lbl>
-                    <img src={resizeResult} style={{maxWidth:"100%",borderRadius:10,marginBottom:10,maxHeight:250,objectFit:"contain"}}/>
-                    <a href={resizeResult} download={`huerta-${resizeSize.label.replace(/ /g,"-")}.jpg`} style={{textDecoration:"none"}}>
-                      <Btn style={{background:"linear-gradient(135deg,#43e97b,#38f9d7)"}}>⬇️ Descargar</Btn>
-                    </a>
-                  </Card>
-                )}
-              </div>
-            )}
-
-            {/* COLLAGE */}
-            {designTab===1&&(
-              <div>
-                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Combiná hasta 4 fotos en una sola imagen</p>
-                <div onClick={()=>collageRef.current.click()} style={{border:"2px dashed rgba(0,201,167,0.3)",borderRadius:16,padding:20,textAlign:"center",cursor:"pointer",background:"rgba(0,201,167,0.05)",marginBottom:14}}>
-                  {collageImgs.length>0?(
-                    <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:4}}>
-                      {collageImgs.map((u,i)=><img key={i} src={u} style={{width:"100%",aspectRatio:"1",objectFit:"cover",borderRadius:6}}/>)}
-                    </div>
-                  ):<><div style={{fontSize:34,marginBottom:8}}>🖼️</div><div style={{fontSize:14}}>Seleccioná 2 a 4 fotos</div></>}
-                  <input ref={collageRef} type="file" accept="image/*" multiple style={{display:"none"}} onChange={e=>{const urls=Array.from(e.target.files).slice(0,4).map(f=>URL.createObjectURL(f));setCollageImgs(urls);setCollageResult(null);}}/>
-                </div>
-                {collageImgs.length>0&&<button onClick={()=>{setCollageImgs([]);setCollageResult(null);}} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:8,padding:"6px 14px",fontSize:12,cursor:"pointer",marginBottom:14}}>🗑️ Limpiar fotos</button>}
-                <Card style={{marginBottom:14}}>
-                  <Lbl>Disposición</Lbl>
-                  <div style={{display:"flex",gap:8}}>
-                    {[{id:"2x2",label:"2×2",icon:"⊞"},{id:"1+2",label:"1 grande + 2",icon:"▣"},{id:"3h",label:"3 horizontal",icon:"☰"}].map(l=>(
-                      <button key={l.id} onClick={()=>setCollageLayout(l.id)} style={{flex:1,padding:"10px 4px",borderRadius:10,border:`1px solid ${collageLayout===l.id?"#00c9a7":"rgba(255,255,255,0.1)"}`,background:collageLayout===l.id?"rgba(0,201,167,0.15)":"rgba(255,255,255,0.04)",color:"#fff",fontSize:12,cursor:"pointer",textAlign:"center"}}>
-                        <div style={{fontSize:20}}>{l.icon}</div><div style={{fontSize:10,marginTop:2}}>{l.label}</div>
-                      </button>
-                    ))}
-                  </div>
-                </Card>
-                <Btn onClick={handleCollage} disabled={collageImgs.length<2} style={{marginBottom:14}}>🖼️ Crear collage</Btn>
-                {collageResult&&(
-                  <Card style={{textAlign:"center"}}>
-                    <Lbl>✅ Collage listo</Lbl>
-                    <img src={collageResult} style={{maxWidth:"100%",borderRadius:10,marginBottom:10}}/>
-                    <a href={collageResult} download="huerta-collage.jpg" style={{textDecoration:"none"}}>
-                      <Btn style={{background:"linear-gradient(135deg,#43e97b,#38f9d7)"}}>⬇️ Descargar collage</Btn>
-                    </a>
-                  </Card>
-                )}
-              </div>
-            )}
-
-            {/* TIPOGRAFÍAS */}
-            {designTab===2&&(
-              <div>
-                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Probá distintas tipografías para tu texto</p>
-                <Card style={{marginBottom:14}}>
-                  <Lbl>Tu texto</Lbl>
-                  <input value={typoText} onChange={e=>setTypoText(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:14,boxSizing:"border-box",marginBottom:10}}/>
-                  <div style={{display:"flex",gap:10}}>
-                    <div style={{flex:1}}><Lbl>Color texto</Lbl><input type="color" value={typoColor} onChange={e=>setTypoColor(e.target.value)} style={{width:"100%",height:36,borderRadius:8,border:"none"}}/></div>
-                    <div style={{flex:1}}><Lbl>Fondo</Lbl><input type="color" value={typoBg} onChange={e=>setTypoBg(e.target.value)} style={{width:"100%",height:36,borderRadius:8,border:"none"}}/></div>
-                    <div style={{flex:2}}><Lbl>Tamaño: {typoSize}px</Lbl><input type="range" min={16} max={72} value={typoSize} onChange={e=>setTypoSize(+e.target.value)} style={{width:"100%"}}/></div>
-                  </div>
-                </Card>
-                <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                  {FONTS.map((f,i)=>(
-                    <div key={f} style={{background:"rgba(255,255,255,0.05)",border:`1px solid ${overlayFont===f?"#00c9a7":"rgba(255,255,255,0.1)"}`,borderRadius:12,padding:"14px 16px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}} onClick={()=>setOverlayFont(f)}>
-                      <span style={{fontFamily:f,fontSize:typoSize>40?24:typoSize,color:typoColor,background:typoBg,padding:"4px 10px",borderRadius:6,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{typoText||"Tu texto acá"}</span>
-                      <div style={{marginLeft:10,flexShrink:0}}>
-                        <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginBottom:2}}>{FONT_LABELS[i]}</div>
-                        {overlayFont===f&&<div style={{fontSize:10,color:"#00c9a7"}}>✓ Seleccionada</div>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Card style={{marginTop:14,textAlign:"center",border:"1px solid rgba(0,201,167,0.2)"}}>
-                  <Lbl>✅ Tipografía seleccionada</Lbl>
-                  <div style={{fontFamily:overlayFont,fontSize:28,color:typoColor,background:typoBg,padding:"16px",borderRadius:10,marginTop:6}}>{typoText||"Tu texto acá"}</div>
-                  <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",marginTop:8}}>Esta tipografía se usará al agregar texto sobre tus imágenes en "Crear"</div>
-                </Card>
-              </div>
-            )}
-          </div>
-        )}
-
         {/* CREAR */}
         {tab===1&&(
           <div>
@@ -465,9 +438,7 @@ function App(){
             {step===0&&(
               <div>
                 <div onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileRef.current.click()} style={{border:`2px dashed ${dragging?"#00c9a7":"rgba(255,255,255,0.2)"}`,borderRadius:16,padding:34,textAlign:"center",cursor:"pointer",background:dragging?"rgba(0,201,167,0.1)":"rgba(255,255,255,0.03)",marginBottom:12}}>
-                  <div style={{fontSize:34,marginBottom:8}}>📁</div>
-                  <div style={{fontSize:15,marginBottom:4}}>Arrastrá archivos acá</div>
-                  <div style={{fontSize:12,color:"rgba(255,255,255,0.4)"}}>Fotos y videos · tocá para seleccionar</div>
+                  <div style={{fontSize:34,marginBottom:8}}>📁</div><div style={{fontSize:15,marginBottom:4}}>Arrastrá archivos acá</div><div style={{fontSize:12,color:"rgba(255,255,255,0.4)"}}>Fotos y videos · tocá para seleccionar</div>
                   <input ref={fileRef} type="file" multiple accept="image/*,video/*" style={{display:"none"}} onChange={onFileChange}/>
                 </div>
                 {files.length>0&&<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:12}}>{files.map((f,i)=><div key={i} style={{position:"relative",borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#000"}}>{f.file.type.startsWith("image/")?<img src={f.url} style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<video src={f.url} style={{width:"100%",height:"100%",objectFit:"cover"}} muted/>}<button onClick={e=>{e.stopPropagation();setFiles(p=>p.filter((_,idx)=>idx!==i));}} style={{position:"absolute",top:4,right:4,background:"rgba(0,0,0,0.7)",border:"none",color:"#fff",borderRadius:"50%",width:22,height:22,cursor:"pointer",fontSize:11}}>✕</button></div>)}</div>}
@@ -478,7 +449,12 @@ function App(){
             {step===1&&(
               <div>
                 {previewImg&&<div style={{borderRadius:14,overflow:"hidden",marginBottom:14,aspectRatio:format,background:"#000",maxWidth:240,margin:"0 auto 14px"}}><img src={previewImg} style={{width:"100%",height:"100%",objectFit:"cover",filter:filter==="none"?"none":filter,transition:"filter 0.3s"}}/></div>}
-                <Card style={{marginBottom:12}}><Lbl>Filtros</Lbl><div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>{FILTERS.map(f=><button key={f.id} onClick={()=>setFilter(f.id)} style={{padding:"8px 4px",borderRadius:8,border:`2px solid ${filter===f.id?"#00c9a7":"transparent"}`,background:filter===f.id?"rgba(0,201,167,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer"}}>{f.label}</button>)}</div></Card>
+                <Card style={{marginBottom:12}}>
+                  <Lbl>Filtros (incluye tus filtros personalizados)</Lbl>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+                    {allFilters.map(f=><button key={f.id} onClick={()=>setFilter(f.id)} style={{padding:"8px 4px",borderRadius:8,border:`2px solid ${filter===f.id?"#00c9a7":"transparent"}`,background:filter===f.id?"rgba(0,201,167,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:11,cursor:"pointer"}}>{f.label}</button>)}
+                  </div>
+                </Card>
                 <Card style={{marginBottom:12}}><Lbl>Formato</Lbl><div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:6}}>{FORMATS.map(f=><button key={f.id} onClick={()=>setFormat(f.id)} style={{padding:"10px 8px",borderRadius:8,border:`2px solid ${format===f.id?"#54a0ff":"transparent"}`,background:format===f.id?"rgba(84,160,255,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer",textAlign:"left"}}><span style={{fontSize:16}}>{f.icon}</span> <strong>{f.label}</strong><br/><span style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>{f.size}px</span></button>)}</div></Card>
                 <div style={{display:"flex",gap:10}}><Btn onClick={()=>setStep(0)} style={{background:"rgba(255,255,255,0.1)",flex:1}}>← Atrás</Btn><Btn onClick={()=>setStep(2)} style={{flex:2}}>Siguiente →</Btn></div>
               </div>
@@ -541,13 +517,170 @@ function App(){
           </div>
         )}
 
+        {/* DISEÑO */}
+        {tab===2&&(
+          <div>
+            <h2 style={{textAlign:"center",marginBottom:16,fontSize:18}}>🎨 Herramientas de Diseño</h2>
+            <div style={{display:"flex",gap:6,marginBottom:20,overflowX:"auto",paddingBottom:4}}>
+              {["📐 Redimensionar","🖼️ Collage","🔤 Tipografías","📖 Stories","🎨 Paleta","🌈 Mis Filtros"].map((t,i)=>(
+                <button key={t} onClick={()=>setDesignTab(i)} style={{padding:"7px 12px",borderRadius:20,border:`1px solid ${designTab===i?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:designTab===i?"rgba(0,201,167,0.2)":"transparent",color:designTab===i?"#00c9a7":"rgba(255,255,255,0.6)",fontSize:11,cursor:"pointer",whiteSpace:"nowrap",fontWeight:designTab===i?700:400}}>{t}</button>
+              ))}
+            </div>
+
+            {/* REDIMENSIONAR */}
+            {designTab===0&&(
+              <div>
+                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Redimensioná tu imagen al tamaño exacto para cada red social</p>
+                <div onClick={()=>resizeRef.current.click()} style={{border:"2px dashed rgba(0,201,167,0.3)",borderRadius:16,padding:30,textAlign:"center",cursor:"pointer",background:"rgba(0,201,167,0.05)",marginBottom:14}}>
+                  {resizeImg?<img src={resizeImg} style={{maxWidth:"100%",maxHeight:200,borderRadius:10,objectFit:"contain"}}/>:<><div style={{fontSize:34,marginBottom:8}}>📁</div><div style={{fontSize:14}}>Tocá para seleccionar imagen</div></>}
+                  <input ref={resizeRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{if(e.target.files[0]){setResizeImg(URL.createObjectURL(e.target.files[0]));setResizeResult(null);}}}/>
+                </div>
+                <Card style={{marginBottom:14}}><Lbl>Formato destino</Lbl><div style={{display:"flex",flexDirection:"column",gap:6}}>{SOCIAL_SIZES.map(s=><button key={s.label} onClick={()=>setResizeSize(s)} style={{padding:"10px 14px",borderRadius:10,border:`1px solid ${resizeSize.label===s.label?"#00c9a7":"rgba(255,255,255,0.1)"}`,background:resizeSize.label===s.label?"rgba(0,201,167,0.15)":"rgba(255,255,255,0.04)",color:"#fff",fontSize:13,cursor:"pointer",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span>{s.icon} {s.label}</span><span style={{fontSize:11,color:"rgba(255,255,255,0.4)"}}>{s.w}×{s.h}</span></button>)}</div></Card>
+                <Btn onClick={handleResize} disabled={!resizeImg} style={{marginBottom:14}}>📐 Redimensionar</Btn>
+                {resizeResult&&<Card style={{textAlign:"center"}}><Lbl>✅ {resizeSize.label}</Lbl><img src={resizeResult} style={{maxWidth:"100%",borderRadius:10,marginBottom:10,maxHeight:250,objectFit:"contain"}}/><a href={resizeResult} download={`huerta-${resizeSize.label.replace(/ /g,"-")}.jpg`} style={{textDecoration:"none"}}><Btn style={{background:"linear-gradient(135deg,#43e97b,#38f9d7)"}}>⬇️ Descargar</Btn></a></Card>}
+              </div>
+            )}
+
+            {/* COLLAGE */}
+            {designTab===1&&(
+              <div>
+                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Combiná hasta 4 fotos en una sola imagen</p>
+                <div onClick={()=>collageRef.current.click()} style={{border:"2px dashed rgba(0,201,167,0.3)",borderRadius:16,padding:20,textAlign:"center",cursor:"pointer",background:"rgba(0,201,167,0.05)",marginBottom:14}}>
+                  {collageImgs.length>0?<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:4}}>{collageImgs.map((u,i)=><img key={i} src={u} style={{width:"100%",aspectRatio:"1",objectFit:"cover",borderRadius:6}}/>)}</div>:<><div style={{fontSize:34,marginBottom:8}}>🖼️</div><div style={{fontSize:14}}>Seleccioná 2 a 4 fotos</div></>}
+                  <input ref={collageRef} type="file" accept="image/*" multiple style={{display:"none"}} onChange={e=>{const urls=Array.from(e.target.files).slice(0,4).map(f=>URL.createObjectURL(f));setCollageImgs(urls);setCollageResult(null);}}/>
+                </div>
+                {collageImgs.length>0&&<button onClick={()=>{setCollageImgs([]);setCollageResult(null);}} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:8,padding:"6px 14px",fontSize:12,cursor:"pointer",marginBottom:14}}>🗑️ Limpiar</button>}
+                <Card style={{marginBottom:14}}><Lbl>Disposición</Lbl><div style={{display:"flex",gap:8}}>{[{id:"2x2",label:"2×2",icon:"⊞"},{id:"1+2",label:"1+2",icon:"▣"},{id:"3h",label:"3 horiz",icon:"☰"}].map(l=><button key={l.id} onClick={()=>setCollageLayout(l.id)} style={{flex:1,padding:"10px 4px",borderRadius:10,border:`1px solid ${collageLayout===l.id?"#00c9a7":"rgba(255,255,255,0.1)"}`,background:collageLayout===l.id?"rgba(0,201,167,0.15)":"rgba(255,255,255,0.04)",color:"#fff",fontSize:12,cursor:"pointer",textAlign:"center"}}><div style={{fontSize:20}}>{l.icon}</div><div style={{fontSize:10,marginTop:2}}>{l.label}</div></button>)}</div></Card>
+                <Btn onClick={handleCollage} disabled={collageImgs.length<2} style={{marginBottom:14}}>🖼️ Crear collage</Btn>
+                {collageResult&&<Card style={{textAlign:"center"}}><Lbl>✅ Collage listo</Lbl><img src={collageResult} style={{maxWidth:"100%",borderRadius:10,marginBottom:10}}/><a href={collageResult} download="huerta-collage.jpg" style={{textDecoration:"none"}}><Btn style={{background:"linear-gradient(135deg,#43e97b,#38f9d7)"}}>⬇️ Descargar collage</Btn></a></Card>}
+              </div>
+            )}
+
+            {/* TIPOGRAFÍAS */}
+            {designTab===2&&(
+              <div>
+                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Probá distintas tipografías para tu texto</p>
+                <Card style={{marginBottom:14}}>
+                  <Lbl>Tu texto</Lbl>
+                  <input value={typoText} onChange={e=>setTypoText(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:14,boxSizing:"border-box",marginBottom:10}}/>
+                  <div style={{display:"flex",gap:10}}>
+                    <div style={{flex:1}}><Lbl>Color</Lbl><input type="color" value={typoColor} onChange={e=>setTypoColor(e.target.value)} style={{width:"100%",height:36,borderRadius:8,border:"none"}}/></div>
+                    <div style={{flex:1}}><Lbl>Fondo</Lbl><input type="color" value={typoBg} onChange={e=>setTypoBg(e.target.value)} style={{width:"100%",height:36,borderRadius:8,border:"none"}}/></div>
+                    <div style={{flex:2}}><Lbl>Tamaño: {typoSize}px</Lbl><input type="range" min={16} max={72} value={typoSize} onChange={e=>setTypoSize(+e.target.value)} style={{width:"100%"}}/></div>
+                  </div>
+                </Card>
+                <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                  {FONTS.map((f,i)=><div key={f} style={{background:"rgba(255,255,255,0.05)",border:`1px solid ${overlayFont===f?"#00c9a7":"rgba(255,255,255,0.1)"}`,borderRadius:12,padding:"14px 16px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}} onClick={()=>setOverlayFont(f)}><span style={{fontFamily:f,fontSize:Math.min(typoSize,28),color:typoColor,background:typoBg,padding:"4px 10px",borderRadius:6,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{typoText||"Tu texto acá"}</span><div style={{marginLeft:10,flexShrink:0}}><div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginBottom:2}}>{FONT_LABELS[i]}</div>{overlayFont===f&&<div style={{fontSize:10,color:"#00c9a7"}}>✓ Activa</div>}</div></div>)}
+                </div>
+              </div>
+            )}
+
+            {/* STORIES */}
+            {designTab===3&&(
+              <div>
+                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Creá stories profesionales con tu marca</p>
+                <Card style={{marginBottom:14}}>
+                  <Lbl>Plantilla</Lbl>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:14}}>
+                    {STORY_TEMPLATES.map(t=><button key={t.id} onClick={()=>{setStoryTpl(t);setStoryTitle("");setStorySubtitle("");setStoryResult(null);}} style={{padding:"10px 8px",borderRadius:10,border:`2px solid ${storyTpl.id===t.id?"#00c9a7":"transparent"}`,background:storyTpl.id===t.id?"rgba(0,201,167,0.15)":t.bg+"40",color:"#fff",fontSize:12,cursor:"pointer"}}>{t.label}</button>)}
+                  </div>
+                  <Lbl>Título principal</Lbl>
+                  <input value={storyTitle} onChange={e=>setStoryTitle(e.target.value)} placeholder={storyTpl.title} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:13,boxSizing:"border-box",marginBottom:10}}/>
+                  <Lbl>Subtítulo</Lbl>
+                  <input value={storySubtitle} onChange={e=>setStorySubtitle(e.target.value)} placeholder={storyTpl.subtitle} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:13,boxSizing:"border-box",marginBottom:10}}/>
+                  <Lbl>Texto adicional (opcional)</Lbl>
+                  <textarea value={storyExtra} onChange={e=>setStoryExtra(e.target.value)} placeholder="Ej: Disponible este sábado de 9 a 13hs..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:13,boxSizing:"border-box",minHeight:60,resize:"vertical",marginBottom:10}}/>
+                </Card>
+                {/* Preview story */}
+                <div style={{background:storyTpl.bg,borderRadius:16,padding:24,textAlign:"center",marginBottom:14,minHeight:200,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:`2px solid ${storyTpl.accent}40`}}>
+                  <div style={{width:60,height:60,borderRadius:"50%",background:storyTpl.accent,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,fontWeight:800,color:"#fff"}}>S</div>
+                  <div style={{fontWeight:800,fontSize:18,color:"#fff"}}>{storyTitle||storyTpl.title}</div>
+                  <div style={{width:80,height:3,background:storyTpl.accent,borderRadius:2}}></div>
+                  <div style={{fontSize:12,color:storyTpl.accent}}>{storySubtitle||storyTpl.subtitle}</div>
+                  {storyExtra&&<div style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginTop:4}}>{storyExtra}</div>}
+                  <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginTop:8}}>Huerta Agroecológica Siglo XXI</div>
+                </div>
+                <Btn onClick={generateStory} style={{marginBottom:10}}>🎨 Generar Story (1080×1920)</Btn>
+                {storyResult&&<Card style={{textAlign:"center"}}><Lbl>✅ Story lista para descargar</Lbl><img src={storyResult} style={{maxWidth:"100%",maxHeight:300,borderRadius:10,marginBottom:10,objectFit:"contain"}}/><a href={storyResult} download="huerta-story.png" style={{textDecoration:"none"}}><Btn style={{background:"linear-gradient(135deg,#43e97b,#38f9d7)"}}>⬇️ Descargar Story</Btn></a></Card>}
+              </div>
+            )}
+
+            {/* PALETA */}
+            {designTab===4&&(
+              <div>
+                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Los colores oficiales de tu marca para usar siempre</p>
+                <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                  {BRAND_PALETTE.map((c,i)=>(
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:14,background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"12px 16px",border:"1px solid rgba(255,255,255,0.08)"}}>
+                      <div style={{width:50,height:50,borderRadius:10,background:c.hex,flexShrink:0,boxShadow:`0 4px 12px ${c.hex}40`}}></div>
+                      <div style={{flex:1}}>
+                        <div style={{fontWeight:700,fontSize:14,marginBottom:2}}>{c.name}</div>
+                        <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",marginBottom:4}}>{c.desc}</div>
+                        <div style={{fontSize:13,color:"#00c9a7",fontFamily:"monospace"}}>{c.hex}</div>
+                      </div>
+                      <button onClick={()=>copyToClipboard(c.hex)} style={{background:"rgba(0,201,167,0.2)",border:"none",color:"#00c9a7",borderRadius:8,padding:"8px 12px",fontSize:12,cursor:"pointer",flexShrink:0}}>Copiar</button>
+                    </div>
+                  ))}
+                </div>
+                <Card style={{marginTop:16,textAlign:"center",border:"1px solid rgba(0,201,167,0.2)"}}>
+                  <Lbl>Vista previa de la paleta</Lbl>
+                  <div style={{display:"flex",borderRadius:12,overflow:"hidden",height:50,marginTop:8}}>
+                    {BRAND_PALETTE.map((c,i)=><div key={i} style={{flex:1,background:c.hex,title:c.name}}></div>)}
+                  </div>
+                </Card>
+              </div>
+            )}
+
+            {/* FILTROS PERSONALIZADOS */}
+            {designTab===5&&(
+              <div>
+                <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:16}}>Creá y guardá tus propios filtros con tu estilo</p>
+                <div onClick={()=>cfImgRef.current.click()} style={{border:"2px dashed rgba(0,201,167,0.3)",borderRadius:12,padding:16,textAlign:"center",cursor:"pointer",marginBottom:14,background:"rgba(0,201,167,0.05)"}}>
+                  {cfPreviewImg?<img src={cfPreviewImg} style={{maxWidth:"100%",maxHeight:160,borderRadius:8,objectFit:"contain",filter:customFilterStr}}/>:<><div style={{fontSize:28,marginBottom:4}}>📷</div><div style={{fontSize:13}}>Subí una foto para previsualizar</div></>}
+                  <input ref={cfImgRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>{if(e.target.files[0])setCfPreviewImg(URL.createObjectURL(e.target.files[0]));}}/>
+                </div>
+                <Card style={{marginBottom:14}}>
+                  <Lbl>Ajustes del filtro</Lbl>
+                  {[{label:`☀️ Brillo: ${cfBright}%`,val:cfBright,set:setCfBright,min:50,max:200},{label:`🎨 Contraste: ${cfContrast}%`,val:cfContrast,set:setCfContrast,min:50,max:200},{label:`🌈 Saturación: ${cfSaturate}%`,val:cfSaturate,set:setCfSaturate,min:0,max:300},{label:`🟤 Sepia: ${cfSepia}%`,val:cfSepia,set:setCfSepia,min:0,max:100},{label:`🔄 Tono: ${cfHue}°`,val:cfHue,set:setCfHue,min:0,max:360}].map(s=>(
+                    <div key={s.label} style={{marginBottom:10}}>
+                      <div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:4}}>{s.label}</div>
+                      <input type="range" min={s.min} max={s.max} value={s.val} onChange={e=>s.set(+e.target.value)} style={{width:"100%"}}/>
+                    </div>
+                  ))}
+                  <div style={{display:"flex",gap:10,marginTop:10}}>
+                    <input value={cfName} onChange={e=>setCfName(e.target.value)} placeholder="Nombre del filtro (ej: Verde Huerta)" style={{flex:1,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:"8px 12px",color:"#fff",fontSize:13}}/>
+                    <Btn onClick={saveCustomFilter} disabled={!cfName.trim()} style={{width:"auto",padding:"8px 16px"}}>💾 Guardar</Btn>
+                  </div>
+                </Card>
+                {customFilters.length>0&&(
+                  <div>
+                    <Lbl>Mis filtros guardados</Lbl>
+                    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                      {customFilters.map((f,i)=>(
+                        <div key={i} style={{display:"flex",alignItems:"center",gap:10,background:"rgba(255,255,255,0.05)",borderRadius:12,padding:"10px 14px",border:"1px solid rgba(0,201,167,0.1)"}}>
+                          {cfPreviewImg&&<img src={cfPreviewImg} style={{width:44,height:44,borderRadius:8,objectFit:"cover",filter:f.filter,flexShrink:0}}/>}
+                          <div style={{flex:1}}>
+                            <div style={{fontWeight:600,fontSize:13}}>⭐ {f.name}</div>
+                            <div style={{fontSize:10,color:"rgba(255,255,255,0.4)",marginTop:2,fontFamily:"monospace"}}>{f.filter.slice(0,40)}...</div>
+                          </div>
+                          <button onClick={()=>deleteCustomFilter(i)} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:8,padding:"5px 10px",fontSize:12,cursor:"pointer"}}>🗑️</button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* CALENDARIO */}
         {tab===3&&(
           <div>
             <h2 style={{textAlign:"center",marginBottom:16,fontSize:18}}>📅 Planificador semanal</h2>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:5,marginBottom:20}}>{DAYS.map((d,i)=>{const has=calItems[i];return <div key={d} onClick={()=>{setCalDay(calDay===i?null:i);setCalNote(has?.nota||"");setCalTipo(has?.tipo||"📸 Foto");}} style={{background:calDay===i?"rgba(0,201,167,0.2)":has?"rgba(84,160,255,0.12)":"rgba(255,255,255,0.05)",border:`1px solid ${calDay===i?"#00c9a7":has?"#54a0ff":"rgba(255,255,255,0.1)"}`,borderRadius:10,padding:"10px 2px",textAlign:"center",cursor:"pointer"}}><div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:4}}>{d}</div><div style={{fontSize:16}}>{has?has.emoji||"📌":"+"}</div>{has&&<div style={{fontSize:8,color:"#54a0ff",marginTop:2}}>{has.tipo?.split(" ")[1]||""}</div>}</div>;})}</div>
-            {calDay!==null&&<Card style={{marginBottom:16,border:"1px solid rgba(0,201,167,0.2)"}}><Lbl>Publicación del {DAYS[calDay]}</Lbl><input value={calNote} onChange={e=>setCalNote(e.target.value)} placeholder="¿Qué vas a publicar?" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:13,boxSizing:"border-box",marginBottom:10}}/><div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>{["📸 Foto","🎬 Reel","📊 Carrusel","📖 Story"].map(t=><button key={t} onClick={()=>setCalTipo(t)} style={{padding:"5px 10px",borderRadius:20,border:`1px solid ${calTipo===t?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:calTipo===t?"rgba(0,201,167,0.2)":"transparent",color:calTipo===t?"#00c9a7":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{t}</button>)}</div><div style={{display:"flex",gap:8}}><Btn onClick={()=>{setCalItems(p=>({...p,[calDay]:{nota:calNote,tipo:calTipo,emoji:calTipo[0]}}));setCalDay(null);}} style={{flex:2}}>💾 Guardar</Btn><Btn onClick={()=>{setCalItems(p=>{const n={...p};delete n[calDay];return n;});setCalDay(null);}} style={{background:"rgba(255,87,87,0.3)",flex:1}}>🗑️</Btn></div></Card>}
-            {Object.keys(calItems).length>0&&<Card style={{border:"1px solid rgba(0,201,167,0.15)"}}><Lbl>Resumen</Lbl>{Object.entries(calItems).sort(([a],[b])=>a-b).map(([d,v])=><div key={d} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)"}}><div style={{width:34,height:34,borderRadius:10,background:"rgba(0,201,167,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{v.emoji}</div><div><div style={{fontWeight:600,fontSize:13}}>{DAYS[d]}</div><div style={{fontSize:12,color:"rgba(255,255,255,0.5)"}}>{v.tipo} {v.nota&&`· ${v.nota}`}</div></div></div>)}</Card>}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:5,marginBottom:20}}>{DAYS.map((d,i)=>{const has=calItems[i];return<div key={d} onClick={()=>{setCalDay(calDay===i?null:i);setCalNote(has?.nota||"");setCalTipo(has?.tipo||"📸 Foto");}} style={{background:calDay===i?"rgba(0,201,167,0.2)":has?"rgba(84,160,255,0.12)":"rgba(255,255,255,0.05)",border:`1px solid ${calDay===i?"#00c9a7":has?"#54a0ff":"rgba(255,255,255,0.1)"}`,borderRadius:10,padding:"10px 2px",textAlign:"center",cursor:"pointer"}}><div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:4}}>{d}</div><div style={{fontSize:16}}>{has?has.emoji||"📌":"+"}</div>{has&&<div style={{fontSize:8,color:"#54a0ff",marginTop:2}}>{has.tipo?.split(" ")[1]||""}</div>}</div>;})} </div>
+            {calDay!==null&&<Card style={{marginBottom:16}}><Lbl>Publicación del {DAYS[calDay]}</Lbl><input value={calNote} onChange={e=>setCalNote(e.target.value)} placeholder="¿Qué vas a publicar?" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:8,padding:10,color:"#fff",fontSize:13,boxSizing:"border-box",marginBottom:10}}/><div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>{["📸 Foto","🎬 Reel","📊 Carrusel","📖 Story"].map(t=><button key={t} onClick={()=>setCalTipo(t)} style={{padding:"5px 10px",borderRadius:20,border:`1px solid ${calTipo===t?"#00c9a7":"rgba(255,255,255,0.2)"}`,background:calTipo===t?"rgba(0,201,167,0.2)":"transparent",color:calTipo===t?"#00c9a7":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{t}</button>)}</div><div style={{display:"flex",gap:8}}><Btn onClick={()=>{setCalItems(p=>({...p,[calDay]:{nota:calNote,tipo:calTipo,emoji:calTipo[0]}}));setCalDay(null);}} style={{flex:2}}>💾 Guardar</Btn><Btn onClick={()=>{setCalItems(p=>{const n={...p};delete n[calDay];return n;});setCalDay(null);}} style={{background:"rgba(255,87,87,0.3)",flex:1}}>🗑️</Btn></div></Card>}
+            {Object.keys(calItems).length>0&&<Card><Lbl>Resumen</Lbl>{Object.entries(calItems).sort(([a],[b])=>a-b).map(([d,v])=><div key={d} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)"}}><div style={{width:34,height:34,borderRadius:10,background:"rgba(0,201,167,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{v.emoji}</div><div><div style={{fontWeight:600,fontSize:13}}>{DAYS[d]}</div><div style={{fontSize:12,color:"rgba(255,255,255,0.5)"}}>{v.tipo} {v.nota&&`· ${v.nota}`}</div></div></div>)}</Card>}
           </div>
         )}
 
@@ -560,7 +693,7 @@ function App(){
               <input value={ideasTopic} onChange={e=>setIdeasTopic(e.target.value)} onKeyDown={e=>e.key==="Enter"&&generateIdeas()} placeholder="Tema (ej: tomates, taller de compostaje...)" style={{flex:1,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(0,201,167,0.2)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:13}}/>
               <button onClick={generateIdeas} disabled={loadingIdeas} style={{padding:"10px 18px",borderRadius:10,border:"none",background:loadingIdeas?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#00c9a7,#00b4db)",color:"#fff",fontWeight:700,fontSize:14,cursor:loadingIdeas?"not-allowed":"pointer",whiteSpace:"nowrap"}}>{loadingIdeas?"⏳":"✨ Generar"}</button>
             </div>
-            {ideas.length>0?<div style={{display:"flex",flexDirection:"column",gap:10}}>{ideas.map((idea,i)=><Card key={i} style={{display:"flex",gap:12,alignItems:"flex-start",border:"1px solid rgba(0,201,167,0.1)"}}><div style={{fontSize:26,flexShrink:0}}>{idea.emoji}</div><div style={{flex:1}}><div style={{fontWeight:700,fontSize:14,marginBottom:4}}>{idea.titulo}</div><div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:6}}>{idea.desc}</div><span style={{fontSize:10,padding:"3px 10px",borderRadius:20,background:"rgba(0,201,167,0.2)",color:"#00c9a7"}}>{idea.formato}</span></div><button onClick={()=>{setUserText(idea.desc);setTab(1);setStep(0);}} style={{background:"rgba(0,201,167,0.2)",border:"none",color:"#00c9a7",borderRadius:8,padding:"6px 10px",fontSize:11,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Usar →</button></Card>)}</div>:<div style={{textAlign:"center",padding:40,color:"rgba(255,255,255,0.3)"}}><div style={{fontSize:40,marginBottom:12}}>🌱</div><div>Tocá Generar para obtener ideas</div></div>}
+            {ideas.length>0?<div style={{display:"flex",flexDirection:"column",gap:10}}>{ideas.map((idea,i)=><Card key={i} style={{display:"flex",gap:12,alignItems:"flex-start"}}><div style={{fontSize:26,flexShrink:0}}>{idea.emoji}</div><div style={{flex:1}}><div style={{fontWeight:700,fontSize:14,marginBottom:4}}>{idea.titulo}</div><div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:6}}>{idea.desc}</div><span style={{fontSize:10,padding:"3px 10px",borderRadius:20,background:"rgba(0,201,167,0.2)",color:"#00c9a7"}}>{idea.formato}</span></div><button onClick={()=>{setUserText(idea.desc);setTab(1);setStep(0);}} style={{background:"rgba(0,201,167,0.2)",border:"none",color:"#00c9a7",borderRadius:8,padding:"6px 10px",fontSize:11,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>Usar →</button></Card>)}</div>:<div style={{textAlign:"center",padding:40,color:"rgba(255,255,255,0.3)"}}><div style={{fontSize:40,marginBottom:12}}>🌱</div><div>Tocá Generar para obtener ideas</div></div>}
           </div>
         )}
 
@@ -572,7 +705,7 @@ function App(){
               <button onClick={()=>{setShowAddProd(true);setEditIdx(null);setProdForm({nombre:"",descripcion:"",precio:"",mostrarPrecio:true,categoria:"🌱 Producto",emoji:"🌱"});}} style={{background:"linear-gradient(135deg,#00c9a7,#00b4db)",border:"none",color:"#fff",borderRadius:10,padding:"8px 14px",fontSize:13,fontWeight:700,cursor:"pointer"}}>+ Agregar</button>
             </div>
             {productos.length===0?<div style={{textAlign:"center",padding:40,color:"rgba(255,255,255,0.3)"}}><div style={{fontSize:40,marginBottom:12}}>🌿</div><div style={{marginBottom:16}}>Todavía no agregaste productos</div><button onClick={()=>setShowAddProd(true)} style={{padding:"10px 24px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#00c9a7,#00b4db)",color:"#fff",fontWeight:700,cursor:"pointer"}}>+ Agregar primero</button></div>:(
-              <div>{CATEGORIAS.map(cat=>{const items=productos.filter(p=>p.categoria===cat);if(items.length===0)return null;return<div key={cat} style={{marginBottom:20}}><div style={{fontSize:13,fontWeight:700,color:catBorders[cat]||"#00c9a7",marginBottom:8,padding:"4px 0",borderBottom:`1px solid ${catBorders[cat]||"#00c9a7"}30`}}>{cat}</div><div style={{display:"flex",flexDirection:"column",gap:8}}>{items.map((prod,idx)=>{const realIdx=productos.indexOf(prod);return<Card key={idx} style={{background:catColors[cat]||"rgba(0,201,167,0.1)",border:`1px solid ${catBorders[cat]||"#00c9a7"}30`}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",gap:10}}><div style={{flex:1}}><div style={{fontWeight:700,fontSize:14,marginBottom:3}}>{prod.emoji} {prod.nombre}</div>{prod.descripcion&&<div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:4,lineHeight:1.4}}>{prod.descripcion}</div>}{prod.mostrarPrecio&&prod.precio&&<div style={{fontSize:14,fontWeight:700,color:catBorders[cat]||"#00c9a7"}}>{prod.precio}</div>}{!prod.mostrarPrecio&&<div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontStyle:"italic"}}>Precio a consultar</div>}</div><div style={{display:"flex",gap:6,flexShrink:0}}><button onClick={()=>{setEditIdx(realIdx);setProdForm({...prod});setShowAddProd(true);}} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:8,padding:"5px 10px",fontSize:12,cursor:"pointer"}}>✏️</button><button onClick={()=>deleteProd(realIdx)} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:8,padding:"5px 10px",fontSize:12,cursor:"pointer"}}>🗑️</button></div></div></Card>;})}</div></div>;})} </div>
+              <div>{CATEGORIAS.map(cat=>{const items=productos.filter(p=>p.categoria===cat);if(!items.length)return null;return<div key={cat} style={{marginBottom:20}}><div style={{fontSize:13,fontWeight:700,color:catBorders[cat],marginBottom:8,borderBottom:`1px solid ${catBorders[cat]}30`,paddingBottom:4}}>{cat}</div><div style={{display:"flex",flexDirection:"column",gap:8}}>{items.map((prod,idx)=>{const ri=productos.indexOf(prod);return<Card key={idx} style={{background:catColors[cat],border:`1px solid ${catBorders[cat]}30`}}><div style={{display:"flex",justifyContent:"space-between",gap:10}}><div style={{flex:1}}><div style={{fontWeight:700,fontSize:14,marginBottom:3}}>{prod.emoji} {prod.nombre}</div>{prod.descripcion&&<div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:4}}>{prod.descripcion}</div>}{prod.mostrarPrecio&&prod.precio&&<div style={{fontSize:14,fontWeight:700,color:catBorders[cat]}}>{prod.precio}</div>}{!prod.mostrarPrecio&&<div style={{fontSize:11,color:"rgba(255,255,255,0.3)",fontStyle:"italic"}}>Precio a consultar</div>}</div><div style={{display:"flex",gap:6,flexShrink:0}}><button onClick={()=>{setEditIdx(ri);setProdForm({...prod});setShowAddProd(true);}} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:8,padding:"5px 10px",fontSize:12,cursor:"pointer"}}>✏️</button><button onClick={()=>deleteProd(ri)} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:8,padding:"5px 10px",fontSize:12,cursor:"pointer"}}>🗑️</button></div></div></Card>;})}</div></div>;})} </div>
             )}
           </div>
         )}
@@ -582,7 +715,7 @@ function App(){
           <div>
             <h2 style={{textAlign:"center",marginBottom:16,fontSize:18}}>🕐 Historial</h2>
             {history.length===0?<div style={{textAlign:"center",padding:40,color:"rgba(255,255,255,0.3)"}}><div style={{fontSize:40,marginBottom:12}}>📂</div><div style={{marginBottom:16}}>Todavía no guardaste contenido</div><button onClick={()=>setTab(1)} style={{padding:"10px 24px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#00c9a7,#00b4db)",color:"#fff",fontWeight:700,cursor:"pointer"}}>Crear contenido</button></div>:(
-              <div style={{display:"flex",flexDirection:"column",gap:12}}>{history.map((h,i)=><Card key={h.id} style={{display:"flex",gap:12,border:"1px solid rgba(0,201,167,0.1)"}}>{h.imgUrl?<img src={h.imgUrl} style={{width:56,height:56,borderRadius:10,objectFit:"cover",flexShrink:0}}/>:<div style={{width:56,height:56,borderRadius:10,background:"rgba(0,201,167,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>📝</div>}<div style={{flex:1,minWidth:0}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}><span style={{fontSize:11,background:"rgba(0,201,167,0.2)",color:"#00c9a7",padding:"2px 8px",borderRadius:10}}>{h.platform}</span><span style={{fontSize:10,color:"rgba(255,255,255,0.35)"}}>{h.date}</span></div><div style={{fontSize:12,color:"rgba(255,255,255,0.7)",lineHeight:1.4,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{h.copy}</div><div style={{display:"flex",gap:6,marginTop:6}}><button onClick={()=>copyToClipboard(h.copy+"\n\n"+h.hashtags.join(" "))} style={{background:"rgba(0,201,167,0.15)",border:"none",color:"#00c9a7",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer"}}>Copiar</button><button onClick={()=>deleteHistory(i)} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer"}}>Borrar</button></div></div></Card>)}</div>
+              <div style={{display:"flex",flexDirection:"column",gap:12}}>{history.map((h,i)=><Card key={h.id} style={{display:"flex",gap:12}}>{h.imgUrl?<img src={h.imgUrl} style={{width:56,height:56,borderRadius:10,objectFit:"cover",flexShrink:0}}/>:<div style={{width:56,height:56,borderRadius:10,background:"rgba(0,201,167,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>📝</div>}<div style={{flex:1,minWidth:0}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{fontSize:11,background:"rgba(0,201,167,0.2)",color:"#00c9a7",padding:"2px 8px",borderRadius:10}}>{h.platform}</span><span style={{fontSize:10,color:"rgba(255,255,255,0.35)"}}>{h.date}</span></div><div style={{fontSize:12,color:"rgba(255,255,255,0.7)",lineHeight:1.4,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{h.copy}</div><div style={{display:"flex",gap:6,marginTop:6}}><button onClick={()=>copyToClipboard(h.copy+"\n\n"+h.hashtags.join(" "))} style={{background:"rgba(0,201,167,0.15)",border:"none",color:"#00c9a7",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer"}}>Copiar</button><button onClick={()=>deleteHistory(i)} style={{background:"rgba(255,87,87,0.2)",border:"none",color:"#ff5757",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer"}}>Borrar</button></div></div></Card>)}</div>
             )}
           </div>
         )}
