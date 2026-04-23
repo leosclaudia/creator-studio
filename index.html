@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Creator Studio</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#f093fb" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CreatorStudio" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f0c29; color: #fff; font-family: system-ui, sans-serif; }
+    select option { background: #302b63; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(240,147,251,0.4); border-radius: 4px; }
+    input[type=range] { accent-color: #f093fb; }
+    input[type=color] { cursor: pointer; border-radius: 8px; border: none; }
+    textarea, input, select { outline: none; font-family: inherit; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useCallback } = React;
+
+const TABS = ["🏠 Inicio","📤 Crear","📅 Calendario","💡 Ideas","🕐 Historial"];
+const DAYS = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+const FILTERS = [
+  {id:"none",label:"Original"},
+  {id:"brightness(1.2) contrast(1.1)",label:"Vibrante"},
+  {id:"grayscale(1)",label:"B&N"},
+  {id:"saturate(1.8)",label:"Saturado"},
+  {id:"contrast(1.3) brightness(0.9)",label:"Dramático"},
+  {id:"sepia(0.6)",label:"Vintage"},
+];
+const FORMATS = [
+  {id:"1/1",label:"Feed",size:"1080×1080",icon:"⬛"},
+  {id:"9/16",label:"Reel/Story",size:"1080×1920",icon:"📱"},
+  {id:"16/9",label:"Portada",size:"1200×630",icon:"🖥️"},
+  {id:"4/5",label:"Portrait",size:"1080×1350",icon:"📸"},
+];
+const MOODS = ["Energética 🔥","Tranquila 🌊","Romántica 💕","Motivacional 💪","Divertida 😂"];
+const STEPS_CREATE = ["📤 Subir","✨ Mejorar","🖊️ Texto","✍️ Copy","📲 Exportar"];
+const BEST_TIMES = {instagram:"18:00 – 21:00 hs", whatsapp:"08:00 – 10:00 hs"};
+
+const COPIES = {
+  profesional: [
+    "Compartimos con orgullo nuestro trabajo. Cada detalle fue pensado para vos. 💼✨",
+    "La excelencia no es un accidente, es el resultado del esfuerzo constante. 🎯",
+    "Innovamos cada día para ofrecerte lo mejor. Porque te lo merecés. 🚀",
+  ],
+  divertido: [
+    "¡Esto es lo que pasa cuando nos ponemos creativos! 😂🎉 ¿Te copa?",
+    "Modo: creatividad activada al 100% 🔥😜 ¡No podíamos guardárnoslo!",
+    "¿Quién dijo que el trabajo no puede ser divertido? ¡Mirá esto! 🎊",
+  ],
+  inspiracional: [
+    "Cada día es una nueva oportunidad para brillar. ¡No la desperdicies! ✨🌟",
+    "Los sueños no tienen fecha de vencimiento. Seguí adelante. 💫",
+    "El éxito es la suma de pequeños esfuerzos repetidos día tras día. 💪",
+  ],
+  cercano: [
+    "Queremos compartir este momento especial con vos 🥰 ¡Gracias por estar siempre!",
+    "Hoy fue un día increíble y vos sos parte de todo esto 💕 ¡Gracias!",
+    "Sin ustedes nada de esto tendría sentido. ¡Son lo mejor! ❤️",
+  ],
+  informativo: [
+    "Te contamos todo lo que necesitás saber 👇 Leé hasta el final, ¡vale la pena!",
+    "Información importante que no podés perderte 📌 Guardá este post.",
+    "Datos clave que van a cambiar tu perspectiva 💡 ¡Compartilo con quien lo necesite!",
+  ],
+  urgente: [
+    "⚠️ ¡ÚLTIMAS HORAS! No dejes pasar esta oportunidad única. ¡Actuá ya!",
+    "🚨 ATENCIÓN: Quedan muy pocos lugares disponibles. ¡No te quedés afuera!",
+    "⏰ El tiempo corre. Esta oferta vence HOY. ¡Aprovechá ahora!",
+  ],
+};
+
+const HASHTAGS_BY_TONE = {
+  profesional: ["#profesional","#negocio","#emprendedor","#trabajo","#éxito","#empresa","#calidad","#servicio","#innovación","#liderazgo","#networking","#productividad"],
+  divertido: ["#diversión","#viral","#humor","#trending","#memes","#buenasvibraciones","#felicidad","#risas","#entretenimiento","#positivo","#enjoy","#lifestyle"],
+  inspiracional: ["#motivación","#inspiración","#éxito","#mentalidad","#crecimiento","#superación","#actitud","#sueños","#fuerza","#mindset","#positivo","#logros"],
+  cercano: ["#gracias","#comunidad","#familia","#amor","#juntos","#conexión","#corazón","#real","#auténtico","#personas","#vida","#momentos"],
+  informativo: ["#sabíasque","#tips","#consejos","#aprendizaje","#educación","#información","#datos","#útil","#conocimiento","#contenido","#aprende","#compartir"],
+  urgente: ["#oferta","#promoción","#descuento","#últimashoras","#oportunidad","#ahora","#notemetas","#imperdible","#especial","#limitado","#hoy","#aprovecha"],
+};
+
+const IDEAS_BY_TOPIC = {
+  default: [
+    {titulo:"Behind the scenes",desc:"Mostrá cómo trabajás día a día",formato:"Reel",emoji:"🎬"},
+    {titulo:"Tip del día",desc:"Compartí un consejo útil de tu área",formato:"Imagen",emoji:"💡"},
+    {titulo:"Antes y después",desc:"Mostrá una transformación impactante",formato:"Carrusel",emoji:"✨"},
+    {titulo:"Pregunta a tu audiencia",desc:"Usá una encuesta para generar interacción",formato:"Story",emoji:"❓"},
+    {titulo:"Testimonio de cliente",desc:"Compartí una experiencia positiva real",formato:"Imagen",emoji:"⭐"},
+    {titulo:"Proceso de trabajo",desc:"Mostrá paso a paso cómo hacés lo que hacés",formato:"Reel",emoji:"🔧"},
+    {titulo:"Dato curioso",desc:"Compartí algo sorprendente de tu sector",formato:"Imagen",emoji:"🤔"},
+    {titulo:"Presentación del equipo",desc:"Presentá a las personas detrás del proyecto",formato:"Carrusel",emoji:"👥"},
+  ],
+};
+
+function Card({children, style, onClick}) {
+  return <div onClick={onClick} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:16,padding:16,...style}}>{children}</div>;
+}
+function Label({children}) {
+  return <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>{children}</div>;
+}
+function GradBtn({onClick,disabled,children,style}) {
+  return <button onClick={onClick} disabled={disabled} style={{padding:"12px 20px",borderRadius:12,border:"none",background:disabled?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#f093fb,#f5576c)",color:"#fff",fontWeight:700,fontSize:14,cursor:disabled?"not-allowed":"pointer",width:"100%",...style}}>{children}</button>;
+}
+
+function App() {
+  const [tab, setTab] = useState(0);
+  const [step, setStep] = useState(0);
+  const [files, setFiles] = useState([]);
+  const [userText, setUserText] = useState("");
+  const [filter, setFilter] = useState("none");
+  const [format, setFormat] = useState("1/1");
+  const [textOverlay, setTextOverlay] = useState("");
+  const [overlayColor, setOverlayColor] = useState("#ffffff");
+  const [overlaySize, setOverlaySize] = useState(24);
+  const [copy, setCopy] = useState("");
+  const [hashtags, setHashtags] = useState([]);
+  const [selHashtags, setSelHashtags] = useState([]);
+  const [tone, setTone] = useState("profesional");
+  const [platform, setPlatform] = useState("instagram");
+  const [mood, setMood] = useState("Energética 🔥");
+  const [dragging, setDragging] = useState(false);
+  const [calItems, setCalItems] = useState({});
+  const [calDay, setCalDay] = useState(null);
+  const [calNote, setCalNote] = useState("");
+  const [calTipo, setCalTipo] = useState("📸 Foto");
+  const [ideas, setIdeas] = useState([]);
+  const [ideasTopic, setIdeasTopic] = useState("");
+  const [loadingCopy, setLoadingCopy] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [copied, setCopied] = useState(false);
+  const fileRef = useRef();
+
+  const onDrop = useCallback(e => {
+    e.preventDefault(); setDragging(false);
+    const dropped = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/")||f.type.startsWith("video/"));
+    if(dropped.length) setFiles(p=>[...p,...dropped.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
+  },[]);
+
+  const onFileChange = e => {
+    const sel = Array.from(e.target.files).filter(f=>f.type.startsWith("image/")||f.type.startsWith("video/"));
+    if(sel.length) setFiles(p=>[...p,...sel.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
+    e.target.value="";
+  };
+
+  const GEMINI_KEY = "AIzaSyAJ7Tf0vjrHF5PgPUNyU1dxBy6_Hybd9f8";
+
+  const generateCopy = async () => {
+    setLoadingCopy(true); setCopy(""); setHashtags([]); setSelHashtags([]);
+    const prompt = `Sos un experto en marketing digital y redes sociales. Generá un copy para una publicación de ${platform} con tono ${tone}. ${userText ? `Contexto: "${userText}".` : ""} Luego listá 12 hashtags relevantes en español. Respondé SOLO con JSON así, sin explicaciones ni markdown: {"copy":"...","hashtags":["#uno","#dos",...]}`;
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({contents:[{parts:[{text: prompt}]}]})
+      });
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const clean = text.replace(/```json|```/g,"").trim();
+      const parsed = JSON.parse(clean);
+      setCopy(parsed.copy || ""); setHashtags(parsed.hashtags || []); setSelHashtags((parsed.hashtags||[]).slice(0,6));
+    } catch {
+      const pool = COPIES[tone] || COPIES.profesional;
+      const base = pool[Math.floor(Math.random()*pool.length)];
+      setCopy(base + (userText ? `\n\n${userText}` : ""));
+      const tags = [...(HASHTAGS_BY_TONE[tone]||[]), ...(platform==="instagram"?["#instagram","#reels"]:["#whatsapp","#whatsappbusiness"])];
+      setHashtags([...new Set(tags)]); setSelHashtags([...new Set(tags)].slice(0,6));
+    }
+    setLoadingCopy(false);
+  };
+
+  const [loadingIdeas, setLoadingIdeas] = useState(false);
+
+  const generateIdeas = async () => {
+    setLoadingIdeas(true); setIdeas([]);
+    const prompt = `Sos un estratega de redes sociales. Generá 8 ideas creativas de contenido para publicar en Instagram/WhatsApp. ${ideasTopic ? `Rubro o tema: "${ideasTopic}".` : ""} Respondé SOLO con JSON sin markdown: {"ideas":[{"titulo":"...","desc":"...","formato":"Reel|Imagen|Carrusel|Story","emoji":"..."},...]}`;
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({contents:[{parts:[{text: prompt}]}]})
+      });
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      const clean = text.replace(/```json|```/g,"").trim();
+      const parsed = JSON.parse(clean);
+      setIdeas(parsed.ideas || []);
+    } catch {
+      setIdeas(IDEAS_BY_TOPIC.default);
+    }
+    setLoadingIdeas(false);
+  };
+
+  const copyToClipboard = text => {
+    navigator.clipboard.writeText(text).then(()=>{ setCopied(true); setTimeout(()=>setCopied(false),2000); });
+  };
+
+  const saveToHistory = () => {
+    const item = {id:Date.now(),date:new Date().toLocaleDateString("es-AR"),platform,copy,hashtags:selHashtags,filter,imgUrl:files[0]?.url||null};
+    setHistory(p=>[item,...p]);
+    setStep(0); setFiles([]); setCopy(""); setHashtags([]); setUserText(""); setFilter("none"); setTextOverlay("");
+    setTab(4);
+  };
+
+  const previewImg = files.find(f=>f.file?.type?.startsWith("image/"))?.url;
+  const fullText = copy + (selHashtags.length?"\n\n"+selHashtags.join(" "):"");
+  const fmt = FORMATS.find(f=>f.id===format)||FORMATS[0];
+
+  return (
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",display:"flex",flexDirection:"column"}}>
+      {/* Header */}
+      <div style={{background:"rgba(255,255,255,0.04)",backdropFilter:"blur(12px)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"14px 20px",display:"flex",alignItems:"center",gap:10,position:"sticky",top:0,zIndex:100}}>
+        <span style={{fontSize:26}}>🎬</span>
+        <div>
+          <div style={{fontWeight:800,fontSize:17,background:"linear-gradient(90deg,#f093fb,#f5576c)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Content Creator Studio</div>
+          <div style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>Creá contenido increíble para tus redes</div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{display:"flex",overflowX:"auto",borderBottom:"1px solid rgba(255,255,255,0.08)",background:"rgba(0,0,0,0.2)",position:"sticky",top:56,zIndex:99}}>
+        {TABS.map((t,i)=>(
+          <button key={t} onClick={()=>{setTab(i);if(i===1)setStep(0);}} style={{padding:"11px 14px",border:"none",background:"transparent",color:tab===i?"#f093fb":"rgba(255,255,255,0.45)",fontWeight:tab===i?700:400,fontSize:12,cursor:"pointer",borderBottom:tab===i?"2px solid #f093fb":"2px solid transparent",whiteSpace:"nowrap",flexShrink:0}}>{t}</button>
+        ))}
+      </div>
+
+      <div style={{flex:1,maxWidth:640,width:"100%",margin:"0 auto",padding:"20px 16px 80px",overflowY:"auto"}}>
+
+        {/* INICIO */}
+        {tab===0&&(
+          <div>
+            <h2 style={{textAlign:"center",marginBottom:4,fontSize:22}}>¡Hola! 👋</h2>
+            <p style={{textAlign:"center",color:"rgba(255,255,255,0.5)",fontSize:13,marginBottom:20}}>¿Qué querés hacer hoy?</p>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
+              {[{icon:"📤",label:"Crear contenido",desc:"Subí archivos y generá copy",t:1},{icon:"📅",label:"Planificar",desc:"Calendario semanal",t:2},{icon:"💡",label:"Ideas",desc:"Generá ideas para publicar",t:3},{icon:"🕐",label:"Historial",desc:"Tu contenido guardado",t:4}].map(item=>(
+                <Card key={item.t} onClick={()=>setTab(item.t)} style={{cursor:"pointer",textAlign:"center"}}>
+                  <div style={{fontSize:30,marginBottom:8}}>{item.icon}</div>
+                  <div style={{fontWeight:700,fontSize:13,marginBottom:3}}>{item.label}</div>
+                  <div style={{fontSize:11,color:"rgba(255,255,255,0.45)"}}>{item.desc}</div>
+                </Card>
+              ))}
+            </div>
+            <Card style={{marginBottom:14}}>
+              <Label>⏰ Mejor horario para publicar hoy</Label>
+              <div style={{display:"flex",justifyContent:"space-around",marginTop:10}}>
+                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>📸</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>Instagram</div><div style={{fontWeight:700,color:"#f093fb",fontSize:13}}>{BEST_TIMES.instagram}</div></div>
+                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>💬</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>WhatsApp</div><div style={{fontWeight:700,color:"#4facfe",fontSize:13}}>{BEST_TIMES.whatsapp}</div></div>
+              </div>
+            </Card>
+            {history.length>0&&(
+              <Card>
+                <Label>🕐 Último guardado</Label>
+                <div style={{fontSize:13,marginTop:6,color:"rgba(255,255,255,0.7)",lineHeight:1.5}}>{history[0].copy.slice(0,80)}...</div>
+                <div style={{fontSize:11,color:"rgba(255,255,255,0.35)",marginTop:4}}>{history[0].date} · {history[0].platform}</div>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {/* CREAR */}
+        {tab===1&&(
+          <div>
+            {/* Step indicator */}
+            <div style={{display:"flex",justifyContent:"center",gap:0,marginBottom:22,overflowX:"auto"}}>
+              {STEPS_CREATE.map((s,i)=>(
+                <div key={s} style={{display:"flex",alignItems:"center"}}>
+                  <div onClick={()=>i<=step&&setStep(i)} style={{display:"flex",flexDirection:"column",alignItems:"center",cursor:i<=step?"pointer":"default"}}>
+                    <div style={{width:28,height:28,borderRadius:"50%",background:i<=step?"linear-gradient(135deg,#f093fb,#f5576c)":"rgba(255,255,255,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700}}>{i<step?"✓":i+1}</div>
+                    <div style={{fontSize:9,marginTop:3,color:i<=step?"#f093fb":"rgba(255,255,255,0.3)",whiteSpace:"nowrap"}}>{s}</div>
+                  </div>
+                  {i<STEPS_CREATE.length-1&&<div style={{width:18,height:2,background:i<step?"linear-gradient(90deg,#f093fb,#f5576c)":"rgba(255,255,255,0.1)",margin:"0 2px",marginBottom:18}}/>}
+                </div>
+              ))}
+            </div>
+
+            {/* STEP 0 Subir */}
+            {step===0&&(
+              <div>
+                <div onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileRef.current.click()} style={{border:`2px dashed ${dragging?"#f093fb":"rgba(255,255,255,0.2)"}`,borderRadius:16,padding:34,textAlign:"center",cursor:"pointer",background:dragging?"rgba(240,147,251,0.1)":"rgba(255,255,255,0.03)",marginBottom:12}}>
+                  <div style={{fontSize:34,marginBottom:8}}>📁</div>
+                  <div style={{fontSize:15,marginBottom:4}}>Arrastrá archivos acá</div>
+                  <div style={{fontSize:12,color:"rgba(255,255,255,0.4)"}}>Fotos y videos · tocá para seleccionar</div>
+                  <input ref={fileRef} type="file" multiple accept="image/*,video/*" style={{display:"none"}} onChange={onFileChange}/>
+                </div>
+                {files.length>0&&(
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:12}}>
+                    {files.map((f,i)=>(
+                      <div key={i} style={{position:"relative",borderRadius:10,overflow:"hidden",aspectRatio:"1",background:"#000"}}>
+                        {f.file.type.startsWith("image/")?<img src={f.url} style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<video src={f.url} style={{width:"100%",height:"100%",objectFit:"cover"}} muted/>}
+                        <button onClick={e=>{e.stopPropagation();setFiles(p=>p.filter((_,idx)=>idx!==i));}} style={{position:"absolute",top:4,right:4,background:"rgba(0,0,0,0.7)",border:"none",color:"#fff",borderRadius:"50%",width:22,height:22,cursor:"pointer",fontSize:11}}>✕</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <textarea value={userText} onChange={e=>setUserText(e.target.value)} placeholder="Contexto o idea para la publicación (opcional)..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:12,padding:12,color:"#fff",fontSize:14,resize:"vertical",minHeight:70,boxSizing:"border-box",marginBottom:14}}/>
+                <GradBtn onClick={()=>setStep(1)} disabled={files.length===0&&!userText}>Continuar →</GradBtn>
+              </div>
+            )}
+
+            {/* STEP 1 Mejorar */}
+            {step===1&&(
+              <div>
+                {previewImg&&(
+                  <div style={{borderRadius:14,overflow:"hidden",marginBottom:14,aspectRatio:format,background:"#000",maxWidth:240,margin:"0 auto 14px"}}>
+                    <img src={previewImg} style={{width:"100%",height:"100%",objectFit:"cover",filter:filter==="none"?"none":filter,transition:"filter 0.3s"}}/>
+                  </div>
+                )}
+                <Card style={{marginBottom:12}}>
+                  <Label>Filtros</Label>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+                    {FILTERS.map(f=>(
+   
