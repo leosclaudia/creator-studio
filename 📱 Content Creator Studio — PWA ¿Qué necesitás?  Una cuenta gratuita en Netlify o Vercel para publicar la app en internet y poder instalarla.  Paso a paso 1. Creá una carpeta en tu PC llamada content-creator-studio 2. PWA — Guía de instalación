@@ -1,0 +1,43 @@
+# 📱 Content Creator Studio — PWA
+
+## ¿Qué necesitás?
+Una cuenta gratuita en **Netlify** o **Vercel** para publicar la app en internet y poder instalarla.
+
+---
+
+## Paso a paso
+
+### 1. Creá una carpeta en tu PC llamada `content-creator-studio`
+
+### 2. Adentro poné estos 3 archivos:
+- `index.html` ← la app principal
+- `manifest.json` ← le dice al celular cómo instalarla
+- `sw.js` ← permite usarla offline
+
+### 3. Subí la carpeta a Netlify
+1. Entrá a https://netlify.com y creá una cuenta gratis
+2. Arrastrá la carpeta directo a la pantalla de Netlify
+3. Netlify te da una URL pública (ej: `https://mi-app.netlify.app`)
+
+### 4. Instalá en el celular (Android)
+1. Abrí la URL en Chrome
+2. Aparece un banner "Agregar a pantalla de inicio"
+3. Tocás "Instalar" → ¡listo!
+
+### 4b. Instalá en iPhone
+1. Abrí la URL en Safari
+2. Tocás el botón compartir (□↑)
+3. "Agregar a pantalla de inicio"
+
+### 4c. Instalá en la Notebook
+1. Abrí la URL en Chrome
+2. En la barra de direcciones aparece un ícono de instalación (⊕)
+3. Hacés clic → "Instalar"
+
+---
+
+## ✅ Resultado
+- Ícono en la pantalla de inicio del celular
+- Ícono en el escritorio de la notebook
+- Abre sin barra del navegador, como una app real
+- Funciona offline (básico)
