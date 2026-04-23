@@ -2,38 +2,26 @@
   "name": "Huerta Agroecológica Siglo XXI",
   "short_name": "Huerta SXXI",
   "description": "Content Creator Studio — Huerta Agroecológica Siglo XXI",
-  "start_url": "/creator-studio/",
-  "scope": "/creator-studio/",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#00c9a7",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "./icon.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "icon.png",
+      "src": "./icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "categories": ["productivity", "social"],
-  "lang": "es-AR",
-  "shortcuts": [
-    {
-      "name": "Crear contenido",
-      "url": "/creator-studio/?tab=crear",
-      "description": "Ir directo a crear contenido"
-    },
-    {
-      "name": "Mis productos",
-      "url": "/creator-studio/?tab=precios",
-      "description": "Ver productos y servicios"
-    }
-  ]
+  "lang": "es-AR"
 }
