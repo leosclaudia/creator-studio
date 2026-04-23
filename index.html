@@ -18,10 +18,8 @@
     body { background: #0f0c29; color: #fff; font-family: system-ui, sans-serif; }
     select option { background: #302b63; }
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(240,147,251,0.4); border-radius: 4px; }
     input[type=range] { accent-color: #f093fb; }
-    input[type=color] { cursor: pointer; border-radius: 8px; border: none; }
     textarea, input, select { outline: none; font-family: inherit; }
   </style>
 </head>
@@ -30,6 +28,7 @@
 <script type="text/babel">
 const { useState, useRef, useCallback } = React;
 
+const GEMINI_KEY = "AIzaSyALbDopwj32v53odOvgML4c5vgJCBLefgo";
 const TABS = ["🏠 Inicio","📤 Crear","📅 Calendario","💡 Ideas","🕐 Historial"];
 const DAYS = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
 const FILTERS = [
@@ -41,240 +40,196 @@ const FILTERS = [
   {id:"sepia(0.6)",label:"Vintage"},
 ];
 const FORMATS = [
-  {id:"1/1",label:"Feed",size:"1080×1080",icon:"⬛"},
-  {id:"9/16",label:"Reel/Story",size:"1080×1920",icon:"📱"},
-  {id:"16/9",label:"Portada",size:"1200×630",icon:"🖥️"},
-  {id:"4/5",label:"Portrait",size:"1080×1350",icon:"📸"},
+  {id:"1/1",label:"Feed",size:"1080x1080",icon:"⬛"},
+  {id:"9/16",label:"Reel/Story",size:"1080x1920",icon:"📱"},
+  {id:"16/9",label:"Portada",size:"1200x630",icon:"🖥️"},
+  {id:"4/5",label:"Portrait",size:"1080x1350",icon:"📸"},
 ];
 const MOODS = ["Energética 🔥","Tranquila 🌊","Romántica 💕","Motivacional 💪","Divertida 😂"];
 const STEPS_CREATE = ["📤 Subir","✨ Mejorar","🖊️ Texto","✍️ Copy","📲 Exportar"];
-  const BEST_TIMES = {instagram: igTime, whatsapp: waTime};
-
 const COPIES = {
-  profesional: [
-    "Compartimos con orgullo nuestro trabajo. Cada detalle fue pensado para vos. 💼✨",
-    "La excelencia no es un accidente, es el resultado del esfuerzo constante. 🎯",
-    "Innovamos cada día para ofrecerte lo mejor. Porque te lo merecés. 🚀",
-  ],
-  divertido: [
-    "¡Esto es lo que pasa cuando nos ponemos creativos! 😂🎉 ¿Te copa?",
-    "Modo: creatividad activada al 100% 🔥😜 ¡No podíamos guardárnoslo!",
-    "¿Quién dijo que el trabajo no puede ser divertido? ¡Mirá esto! 🎊",
-  ],
-  inspiracional: [
-    "Cada día es una nueva oportunidad para brillar. ¡No la desperdicies! ✨🌟",
-    "Los sueños no tienen fecha de vencimiento. Seguí adelante. 💫",
-    "El éxito es la suma de pequeños esfuerzos repetidos día tras día. 💪",
-  ],
-  cercano: [
-    "Queremos compartir este momento especial con vos 🥰 ¡Gracias por estar siempre!",
-    "Hoy fue un día increíble y vos sos parte de todo esto 💕 ¡Gracias!",
-    "Sin ustedes nada de esto tendría sentido. ¡Son lo mejor! ❤️",
-  ],
-  informativo: [
-    "Te contamos todo lo que necesitás saber 👇 Leé hasta el final, ¡vale la pena!",
-    "Información importante que no podés perderte 📌 Guardá este post.",
-    "Datos clave que van a cambiar tu perspectiva 💡 ¡Compartilo con quien lo necesite!",
-  ],
-  urgente: [
-    "⚠️ ¡ÚLTIMAS HORAS! No dejes pasar esta oportunidad única. ¡Actuá ya!",
-    "🚨 ATENCIÓN: Quedan muy pocos lugares disponibles. ¡No te quedés afuera!",
-    "⏰ El tiempo corre. Esta oferta vence HOY. ¡Aprovechá ahora!",
-  ],
+  profesional:["Compartimos con orgullo nuestro trabajo. Cada detalle fue pensado para vos. 💼✨","La excelencia no es un accidente, es el resultado del esfuerzo constante. 🎯","Innovamos cada día para ofrecerte lo mejor. Porque te lo merecés. 🚀"],
+  divertido:["¡Esto es lo que pasa cuando nos ponemos creativos! 😂🎉 ¿Te copa?","Modo creatividad activada al 100% 🔥😜 ¡No podíamos guardárnoslo!","¿Quién dijo que el trabajo no puede ser divertido? ¡Mirá esto! 🎊"],
+  inspiracional:["Cada día es una nueva oportunidad para brillar. ¡No la desperdicies! ✨🌟","Los sueños no tienen fecha de vencimiento. Seguí adelante. 💫","El éxito es la suma de pequeños esfuerzos repetidos día tras día. 💪"],
+  cercano:["Queremos compartir este momento especial con vos 🥰 ¡Gracias por estar siempre!","Hoy fue un día increíble y vos sos parte de todo esto 💕 ¡Gracias!","Sin ustedes nada de esto tendría sentido. ¡Son lo mejor! ❤️"],
+  informativo:["Te contamos todo lo que necesitás saber 👇 ¡Leé hasta el final, vale la pena!","Información importante que no podés perderte 📌 Guardá este post.","Datos clave que van a cambiar tu perspectiva 💡 ¡Compartilo!"],
+  urgente:["⚠️ ¡ÚLTIMAS HORAS! No dejes pasar esta oportunidad única. ¡Actuá ya!","🚨 ATENCIÓN: Quedan muy pocos lugares disponibles. ¡No te quedés afuera!","⏰ El tiempo corre. Esta oferta vence HOY. ¡Aprovechá ahora!"],
 };
-
-const HASHTAGS_BY_TONE = {
-  profesional: ["#profesional","#negocio","#emprendedor","#trabajo","#éxito","#empresa","#calidad","#servicio","#innovación","#liderazgo","#networking","#productividad"],
-  divertido: ["#diversión","#viral","#humor","#trending","#memes","#buenasvibraciones","#felicidad","#risas","#entretenimiento","#positivo","#enjoy","#lifestyle"],
-  inspiracional: ["#motivación","#inspiración","#éxito","#mentalidad","#crecimiento","#superación","#actitud","#sueños","#fuerza","#mindset","#positivo","#logros"],
-  cercano: ["#gracias","#comunidad","#familia","#amor","#juntos","#conexión","#corazón","#real","#auténtico","#personas","#vida","#momentos"],
-  informativo: ["#sabíasque","#tips","#consejos","#aprendizaje","#educación","#información","#datos","#útil","#conocimiento","#contenido","#aprende","#compartir"],
-  urgente: ["#oferta","#promoción","#descuento","#últimashoras","#oportunidad","#ahora","#notemetas","#imperdible","#especial","#limitado","#hoy","#aprovecha"],
+const HASHTAGS = {
+  profesional:["#profesional","#negocio","#emprendedor","#trabajo","#éxito","#empresa","#calidad","#servicio","#innovación","#liderazgo","#networking","#productividad"],
+  divertido:["#diversión","#viral","#humor","#trending","#buenasvibraciones","#felicidad","#risas","#entretenimiento","#positivo","#enjoy","#lifestyle","#argentina"],
+  inspiracional:["#motivación","#inspiración","#éxito","#mentalidad","#crecimiento","#superación","#actitud","#sueños","#fuerza","#mindset","#positivo","#logros"],
+  cercano:["#gracias","#comunidad","#familia","#amor","#juntos","#conexión","#corazón","#real","#auténtico","#personas","#vida","#momentos"],
+  informativo:["#sabíasque","#tips","#consejos","#aprendizaje","#educación","#información","#datos","#útil","#conocimiento","#contenido","#aprende","#compartir"],
+  urgente:["#oferta","#promoción","#descuento","#últimashoras","#oportunidad","#ahora","#imperdible","#especial","#limitado","#hoy","#aprovecha","#sale"],
 };
+const IDEAS_DEFAULT = [
+  {titulo:"Behind the scenes",desc:"Mostrá cómo trabajás día a día",formato:"Reel",emoji:"🎬"},
+  {titulo:"Tip del día",desc:"Compartí un consejo útil de tu área",formato:"Imagen",emoji:"💡"},
+  {titulo:"Antes y después",desc:"Mostrá una transformación impactante",formato:"Carrusel",emoji:"✨"},
+  {titulo:"Pregunta a tu audiencia",desc:"Usá una encuesta para generar interacción",formato:"Story",emoji:"❓"},
+  {titulo:"Testimonio de cliente",desc:"Compartí una experiencia positiva real",formato:"Imagen",emoji:"⭐"},
+  {titulo:"Proceso de trabajo",desc:"Mostrá paso a paso cómo lo hacés",formato:"Reel",emoji:"🔧"},
+  {titulo:"Dato curioso",desc:"Compartí algo sorprendente de tu sector",formato:"Imagen",emoji:"🤔"},
+  {titulo:"Presentación del equipo",desc:"Presentá a las personas detrás del proyecto",formato:"Carrusel",emoji:"👥"},
+];
 
-const IDEAS_BY_TOPIC = {
-  default: [
-    {titulo:"Behind the scenes",desc:"Mostrá cómo trabajás día a día",formato:"Reel",emoji:"🎬"},
-    {titulo:"Tip del día",desc:"Compartí un consejo útil de tu área",formato:"Imagen",emoji:"💡"},
-    {titulo:"Antes y después",desc:"Mostrá una transformación impactante",formato:"Carrusel",emoji:"✨"},
-    {titulo:"Pregunta a tu audiencia",desc:"Usá una encuesta para generar interacción",formato:"Story",emoji:"❓"},
-    {titulo:"Testimonio de cliente",desc:"Compartí una experiencia positiva real",formato:"Imagen",emoji:"⭐"},
-    {titulo:"Proceso de trabajo",desc:"Mostrá paso a paso cómo hacés lo que hacés",formato:"Reel",emoji:"🔧"},
-    {titulo:"Dato curioso",desc:"Compartí algo sorprendente de tu sector",formato:"Imagen",emoji:"🤔"},
-    {titulo:"Presentación del equipo",desc:"Presentá a las personas detrás del proyecto",formato:"Carrusel",emoji:"👥"},
-  ],
-};
+function Card({children,style,onClick}){ return <div onClick={onClick} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:16,padding:16,...style}}>{children}</div>; }
+function Lbl({children}){ return <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>{children}</div>; }
+function Btn({onClick,disabled,children,style}){ return <button onClick={onClick} disabled={disabled} style={{padding:"12px 20px",borderRadius:12,border:"none",background:disabled?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#f093fb,#f5576c)",color:"#fff",fontWeight:700,fontSize:14,cursor:disabled?"not-allowed":"pointer",width:"100%",...style}}>{children}</button>; }
 
-function Card({children, style, onClick}) {
-  return <div onClick={onClick} style={{background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:16,padding:16,...style}}>{children}</div>;
-}
-function Label({children}) {
-  return <div style={{fontSize:11,color:"rgba(255,255,255,0.45)",marginBottom:6,textTransform:"uppercase",letterSpacing:1}}>{children}</div>;
-}
-function GradBtn({onClick,disabled,children,style}) {
-  return <button onClick={onClick} disabled={disabled} style={{padding:"12px 20px",borderRadius:12,border:"none",background:disabled?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#f093fb,#f5576c)",color:"#fff",fontWeight:700,fontSize:14,cursor:disabled?"not-allowed":"pointer",width:"100%",...style}}>{children}</button>;
-}
+function App(){
+  const [tab,setTab]=useState(0);
+  const [step,setStep]=useState(0);
+  const [files,setFiles]=useState([]);
+  const [userText,setUserText]=useState("");
+  const [filter,setFilter]=useState("none");
+  const [format,setFormat]=useState("1/1");
+  const [textOverlay,setTextOverlay]=useState("");
+  const [overlayColor,setOverlayColor]=useState("#ffffff");
+  const [overlaySize,setOverlaySize]=useState(24);
+  const [copy,setCopy]=useState("");
+  const [hashtags,setHashtags]=useState([]);
+  const [selTags,setSelTags]=useState([]);
+  const [tone,setTone]=useState("profesional");
+  const [platform,setPlatform]=useState("instagram");
+  const [mood,setMood]=useState("Energética 🔥");
+  const [dragging,setDragging]=useState(false);
+  const [loadingCopy,setLoadingCopy]=useState(false);
+  const [loadingIdeas,setLoadingIdeas]=useState(false);
+  const [calItems,setCalItems]=useState({});
+  const [calDay,setCalDay]=useState(null);
+  const [calNote,setCalNote]=useState("");
+  const [calTipo,setCalTipo]=useState("📸 Foto");
+  const [ideas,setIdeas]=useState([]);
+  const [ideasTopic,setIdeasTopic]=useState("");
+  const [history,setHistory]=useState(()=>{ try{ return JSON.parse(localStorage.getItem("ccs_history")||"[]"); }catch{ return []; } });
+  const [copied,setCopied]=useState(false);
+  const [igTime,setIgTime]=useState(()=>localStorage.getItem("ccs_ig_time")||"18:00");
+  const [waTime,setWaTime]=useState(()=>localStorage.getItem("ccs_wa_time")||"08:00");
+  const [showConfig,setShowConfig]=useState(false);
+  const fileRef=useRef();
 
-function App() {
-  const [tab, setTab] = useState(0);
-  const [step, setStep] = useState(0);
-  const [files, setFiles] = useState([]);
-  const [userText, setUserText] = useState("");
-  const [filter, setFilter] = useState("none");
-  const [format, setFormat] = useState("1/1");
-  const [textOverlay, setTextOverlay] = useState("");
-  const [overlayColor, setOverlayColor] = useState("#ffffff");
-  const [overlaySize, setOverlaySize] = useState(24);
-  const [copy, setCopy] = useState("");
-  const [hashtags, setHashtags] = useState([]);
-  const [selHashtags, setSelHashtags] = useState([]);
-  const [tone, setTone] = useState("profesional");
-  const [platform, setPlatform] = useState("instagram");
-  const [mood, setMood] = useState("Energética 🔥");
-  const [dragging, setDragging] = useState(false);
-  const [calItems, setCalItems] = useState({});
-  const [calDay, setCalDay] = useState(null);
-  const [calNote, setCalNote] = useState("");
-  const [calTipo, setCalTipo] = useState("📸 Foto");
-  const [ideas, setIdeas] = useState([]);
-  const [ideasTopic, setIdeasTopic] = useState("");
-  const [loadingCopy, setLoadingCopy] = useState(false);
-  const [history, setHistory] = useState(() => { try { return JSON.parse(localStorage.getItem("ccs_history")||"[]"); } catch { return []; } });
-  const [copied, setCopied] = useState(false);
-  const [igTime, setIgTime] = useState(() => localStorage.getItem("ccs_ig_time")||"18:00");
-  const [waTime, setWaTime] = useState(() => localStorage.getItem("ccs_wa_time")||"08:00");
-  const [showConfig, setShowConfig] = useState(false);
-  const fileRef = useRef();
-
-  const onDrop = useCallback(e => {
+  const onDrop=useCallback(e=>{
     e.preventDefault(); setDragging(false);
-    const dropped = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/")||f.type.startsWith("video/"));
-    if(dropped.length) setFiles(p=>[...p,...dropped.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
+    const d=Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith("image/")||f.type.startsWith("video/"));
+    if(d.length) setFiles(p=>[...p,...d.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
   },[]);
 
-  const onFileChange = e => {
-    const sel = Array.from(e.target.files).filter(f=>f.type.startsWith("image/")||f.type.startsWith("video/"));
-    if(sel.length) setFiles(p=>[...p,...sel.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
+  const onFileChange=e=>{
+    const s=Array.from(e.target.files).filter(f=>f.type.startsWith("image/")||f.type.startsWith("video/"));
+    if(s.length) setFiles(p=>[...p,...s.map(f=>({file:f,url:URL.createObjectURL(f)}))]);
     e.target.value="";
   };
 
-  const GEMINI_KEY = "AIzaSyALbDopwj32v53odOvgML4c5vgJCBLefgo";
-
-  const generateCopy = async () => {
-    setLoadingCopy(true); setCopy(""); setHashtags([]); setSelHashtags([]);
-    const prompt = `Sos un experto en marketing digital y redes sociales. Generá un copy para una publicación de ${platform} con tono ${tone}. ${userText ? `Contexto: "${userText}".` : ""} Luego listá 12 hashtags relevantes en español. Respondé SOLO con JSON así, sin explicaciones ni markdown: {"copy":"...","hashtags":["#uno","#dos",...]}`;
-    try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({contents:[{parts:[{text: prompt}]}]})
+  const generateCopy=async()=>{
+    setLoadingCopy(true); setCopy(""); setHashtags([]); setSelTags([]);
+    const prompt=`Sos un experto en marketing digital. Generá un copy para ${platform} con tono ${tone}. ${userText?`Contexto: "${userText}".`:""} Respondé SOLO con JSON sin markdown: {"copy":"...","hashtags":["#uno","#dos",...]} con 12 hashtags en español.`;
+    try{
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
       });
-      const data = await res.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      const clean = text.replace(/```json|```/g,"").trim();
-      const parsed = JSON.parse(clean);
-      setCopy(parsed.copy || ""); setHashtags(parsed.hashtags || []); setSelHashtags((parsed.hashtags||[]).slice(0,6));
-    } catch {
-      const pool = COPIES[tone] || COPIES.profesional;
-      const base = pool[Math.floor(Math.random()*pool.length)];
-      setCopy(base + (userText ? `\n\n${userText}` : ""));
-      const tags = [...(HASHTAGS_BY_TONE[tone]||[]), ...(platform==="instagram"?["#instagram","#reels"]:["#whatsapp","#whatsappbusiness"])];
-      setHashtags([...new Set(tags)]); setSelHashtags([...new Set(tags)].slice(0,6));
+      const data=await res.json();
+      const text=data.candidates?.[0]?.content?.parts?.[0]?.text||"";
+      const parsed=JSON.parse(text.replace(/```json|```/g,"").trim());
+      setCopy(parsed.copy||""); setHashtags(parsed.hashtags||[]); setSelTags((parsed.hashtags||[]).slice(0,6));
+    }catch{
+      const pool=COPIES[tone]||COPIES.profesional;
+      const base=pool[Math.floor(Math.random()*pool.length)];
+      setCopy(base+(userText?"\n\n"+userText:""));
+      const tags=[...(HASHTAGS[tone]||[]),...(platform==="instagram"?["#instagram","#reels"]:["#whatsapp","#whatsappbusiness"])];
+      const all=[...new Set(tags)]; setHashtags(all); setSelTags(all.slice(0,6));
     }
     setLoadingCopy(false);
   };
 
-  const [loadingIdeas, setLoadingIdeas] = useState(false);
-
-  const generateIdeas = async () => {
+  const generateIdeas=async()=>{
     setLoadingIdeas(true); setIdeas([]);
-    const prompt = `Sos un estratega de redes sociales. Generá 8 ideas creativas de contenido para publicar en Instagram/WhatsApp. ${ideasTopic ? `Rubro o tema: "${ideasTopic}".` : ""} Respondé SOLO con JSON sin markdown: {"ideas":[{"titulo":"...","desc":"...","formato":"Reel|Imagen|Carrusel|Story","emoji":"..."},...]}`;
-    try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`, {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({contents:[{parts:[{text: prompt}]}]})
+    const prompt=`Sos un estratega de redes sociales. Generá 8 ideas creativas de contenido para Instagram/WhatsApp. ${ideasTopic?`Rubro: "${ideasTopic}".`:""} Respondé SOLO con JSON sin markdown: {"ideas":[{"titulo":"...","desc":"...","formato":"Reel|Imagen|Carrusel|Story","emoji":"..."},...]}`;
+    try{
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
       });
-      const data = await res.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      const clean = text.replace(/```json|```/g,"").trim();
-      const parsed = JSON.parse(clean);
-      setIdeas(parsed.ideas || []);
-    } catch {
-      setIdeas(IDEAS_BY_TOPIC.default);
-    }
+      const data=await res.json();
+      const text=data.candidates?.[0]?.content?.parts?.[0]?.text||"";
+      const parsed=JSON.parse(text.replace(/```json|```/g,"").trim());
+      setIdeas(parsed.ideas||IDEAS_DEFAULT);
+    }catch{ setIdeas(IDEAS_DEFAULT); }
     setLoadingIdeas(false);
   };
 
-  const copyToClipboard = text => {
-    navigator.clipboard.writeText(text).then(()=>{ setCopied(true); setTimeout(()=>setCopied(false),2000); });
-  };
+  const copyToClipboard=text=>{ navigator.clipboard.writeText(text).then(()=>{ setCopied(true); setTimeout(()=>setCopied(false),2000); }); };
 
-  const saveToHistory = () => {
-    const item = {id:Date.now(),date:new Date().toLocaleDateString("es-AR"),platform,copy,hashtags:selHashtags,filter,imgUrl:files[0]?.url||null};
-    const updated = [item, ...history];
+  const saveToHistory=()=>{
+    const item={id:Date.now(),date:new Date().toLocaleDateString("es-AR"),platform,copy,hashtags:selTags,filter,imgUrl:files[0]?.url||null};
+    const updated=[item,...history];
     setHistory(updated);
-    try { localStorage.setItem("ccs_history", JSON.stringify(updated)); } catch {}
+    try{ localStorage.setItem("ccs_history",JSON.stringify(updated)); }catch{}
     setStep(0); setFiles([]); setCopy(""); setHashtags([]); setUserText(""); setFilter("none"); setTextOverlay("");
     setTab(4);
   };
 
-  const deleteHistory = (i) => {
-    const updated = history.filter((_,idx)=>idx!==i);
+  const deleteHistory=i=>{
+    const updated=history.filter((_,idx)=>idx!==i);
     setHistory(updated);
-    try { localStorage.setItem("ccs_history", JSON.stringify(updated)); } catch {}
+    try{ localStorage.setItem("ccs_history",JSON.stringify(updated)); }catch{}
   };
 
-  const saveConfig = () => {
-    localStorage.setItem("ccs_ig_time", igTime);
-    localStorage.setItem("ccs_wa_time", waTime);
+  const saveConfig=()=>{
+    localStorage.setItem("ccs_ig_time",igTime);
+    localStorage.setItem("ccs_wa_time",waTime);
     setShowConfig(false);
   };
 
-  const previewImg = files.find(f=>f.file?.type?.startsWith("image/"))?.url;
-  const fullText = copy + (selHashtags.length?"\n\n"+selHashtags.join(" "):"");
-  const fmt = FORMATS.find(f=>f.id===format)||FORMATS[0];
+  const previewImg=files.find(f=>f.file?.type?.startsWith("image/"))?.url;
+  const fullText=copy+(selTags.length?"\n\n"+selTags.join(" "):"");
 
-  return (
+  return(
     <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)",display:"flex",flexDirection:"column"}}>
-      {/* Header */}
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,position:"sticky",top:0,zIndex:100,background:"rgba(255,255,255,0.04)",backdropFilter:"blur(12px)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"14px 20px"}}>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <span style={{fontSize:26}}>🎬</span>
-            <div>
-              <div style={{fontWeight:800,fontSize:17,background:"linear-gradient(90deg,#f093fb,#f5576c)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Content Creator Studio</div>
-              <div style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>Creá contenido increíble para tus redes</div>
-            </div>
-          </div>
-          <button onClick={()=>setShowConfig(true)} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:10,padding:"8px 12px",fontSize:16,cursor:"pointer"}}>⚙️</button>
-        </div>
 
-        {showConfig&&(
-          <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.7)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
-            <div style={{background:"#1a1535",borderRadius:20,padding:24,width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,0.15)"}}>
-              <h3 style={{margin:"0 0 16px",fontSize:16}}>⚙️ Configuración</h3>
-              <div style={{marginBottom:14}}>
-                <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",marginBottom:6}}>⏰ Horario Instagram</div>
-                <input type="time" value={igTime} onChange={e=>setIgTime(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:15,boxSizing:"border-box"}}/>
-              </div>
-              <div style={{marginBottom:20}}>
-                <div style={{fontSize:12,color:"rgba(255,255,255,0.5)",marginBottom:6}}>⏰ Horario WhatsApp</div>
-                <input type="time" value={waTime} onChange={e=>setWaTime(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:15,boxSizing:"border-box"}}/>
-              </div>
-              <div style={{display:"flex",gap:10}}>
-                <button onClick={()=>setShowConfig(false)} style={{flex:1,padding:"12px",borderRadius:12,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#fff",fontSize:14,cursor:"pointer"}}>Cancelar</button>
-                <button onClick={saveConfig} style={{flex:2,padding:"12px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#f093fb,#f5576c)",color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer"}}>💾 Guardar</button>
-              </div>
+      {/* Config Modal */}
+      {showConfig&&(
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+          <div style={{background:"#1a1535",borderRadius:20,padding:24,width:"100%",maxWidth:340,border:"1px solid rgba(255,255,255,0.15)"}}>
+            <h3 style={{margin:"0 0 16px",fontSize:16}}>⚙️ Configuración de horarios</h3>
+            <div style={{marginBottom:14}}>
+              <Lbl>📸 Mejor horario Instagram</Lbl>
+              <input type="time" value={igTime} onChange={e=>setIgTime(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:15,boxSizing:"border-box"}}/>
+            </div>
+            <div style={{marginBottom:20}}>
+              <Lbl>💬 Mejor horario WhatsApp</Lbl>
+              <input type="time" value={waTime} onChange={e=>setWaTime(e.target.value)} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:15,boxSizing:"border-box"}}/>
+            </div>
+            <div style={{display:"flex",gap:10}}>
+              <button onClick={()=>setShowConfig(false)} style={{flex:1,padding:"12px",borderRadius:12,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#fff",fontSize:14,cursor:"pointer"}}>Cancelar</button>
+              <Btn onClick={saveConfig} style={{flex:2}}>💾 Guardar</Btn>
             </div>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Header */}
+      <div style={{background:"rgba(255,255,255,0.04)",backdropFilter:"blur(12px)",borderBottom:"1px solid rgba(255,255,255,0.08)",padding:"14px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:100}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <span style={{fontSize:26}}>🎬</span>
+          <div>
+            <div style={{fontWeight:800,fontSize:17,background:"linear-gradient(90deg,#f093fb,#f5576c)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Content Creator Studio</div>
+            <div style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>Creá contenido increíble para tus redes</div>
+          </div>
+        </div>
+        <button onClick={()=>setShowConfig(true)} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:10,padding:"8px 12px",fontSize:18,cursor:"pointer"}}>⚙️</button>
+      </div>
 
       {/* Tabs */}
-      <div style={{display:"flex",overflowX:"auto",borderBottom:"1px solid rgba(255,255,255,0.08)",background:"rgba(0,0,0,0.2)",position:"sticky",top:56,zIndex:99}}>
+      <div style={{display:"flex",overflowX:"auto",borderBottom:"1px solid rgba(255,255,255,0.08)",background:"rgba(0,0,0,0.2)",position:"sticky",top:60,zIndex:99}}>
         {TABS.map((t,i)=>(
           <button key={t} onClick={()=>{setTab(i);if(i===1)setStep(0);}} style={{padding:"11px 14px",border:"none",background:"transparent",color:tab===i?"#f093fb":"rgba(255,255,255,0.45)",fontWeight:tab===i?700:400,fontSize:12,cursor:"pointer",borderBottom:tab===i?"2px solid #f093fb":"2px solid transparent",whiteSpace:"nowrap",flexShrink:0}}>{t}</button>
         ))}
       </div>
 
-      <div style={{flex:1,maxWidth:640,width:"100%",margin:"0 auto",padding:"20px 16px 80px",overflowY:"auto"}}>
+      <div style={{flex:1,maxWidth:640,width:"100%",margin:"0 auto",padding:"20px 16px 80px"}}>
 
         {/* INICIO */}
         {tab===0&&(
@@ -282,7 +237,7 @@ function App() {
             <h2 style={{textAlign:"center",marginBottom:4,fontSize:22}}>¡Hola! 👋</h2>
             <p style={{textAlign:"center",color:"rgba(255,255,255,0.5)",fontSize:13,marginBottom:20}}>¿Qué querés hacer hoy?</p>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
-              {[{icon:"📤",label:"Crear contenido",desc:"Subí archivos y generá copy",t:1},{icon:"📅",label:"Planificar",desc:"Calendario semanal",t:2},{icon:"💡",label:"Ideas",desc:"Generá ideas para publicar",t:3},{icon:"🕐",label:"Historial",desc:"Tu contenido guardado",t:4}].map(item=>(
+              {[{icon:"📤",label:"Crear contenido",desc:"Subí archivos y generá copy con IA",t:1},{icon:"📅",label:"Planificar",desc:"Calendario semanal",t:2},{icon:"💡",label:"Ideas con IA",desc:"Generá ideas para publicar",t:3},{icon:"🕐",label:"Historial",desc:"Tu contenido guardado",t:4}].map(item=>(
                 <Card key={item.t} onClick={()=>setTab(item.t)} style={{cursor:"pointer",textAlign:"center"}}>
                   <div style={{fontSize:30,marginBottom:8}}>{item.icon}</div>
                   <div style={{fontWeight:700,fontSize:13,marginBottom:3}}>{item.label}</div>
@@ -291,15 +246,15 @@ function App() {
               ))}
             </div>
             <Card style={{marginBottom:14}}>
-              <Label>⏰ Mejor horario para publicar hoy</Label>
+              <Lbl>⏰ Mejor horario para publicar hoy</Lbl>
               <div style={{display:"flex",justifyContent:"space-around",marginTop:10}}>
-                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>📸</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>Instagram</div><div style={{fontWeight:700,color:"#f093fb",fontSize:13}}>{BEST_TIMES.instagram}</div></div>
-                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>💬</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>WhatsApp</div><div style={{fontWeight:700,color:"#4facfe",fontSize:13}}>{BEST_TIMES.whatsapp}</div></div>
+                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>📸</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>Instagram</div><div style={{fontWeight:700,color:"#f093fb",fontSize:14}}>{igTime} hs</div></div>
+                <div style={{textAlign:"center"}}><div style={{fontSize:22}}>💬</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:2}}>WhatsApp</div><div style={{fontWeight:700,color:"#4facfe",fontSize:14}}>{waTime} hs</div></div>
               </div>
             </Card>
             {history.length>0&&(
               <Card>
-                <Label>🕐 Último guardado</Label>
+                <Lbl>🕐 Último guardado</Lbl>
                 <div style={{fontSize:13,marginTop:6,color:"rgba(255,255,255,0.7)",lineHeight:1.5}}>{history[0].copy.slice(0,80)}...</div>
                 <div style={{fontSize:11,color:"rgba(255,255,255,0.35)",marginTop:4}}>{history[0].date} · {history[0].platform}</div>
               </Card>
@@ -310,7 +265,6 @@ function App() {
         {/* CREAR */}
         {tab===1&&(
           <div>
-            {/* Step indicator */}
             <div style={{display:"flex",justifyContent:"center",gap:0,marginBottom:22,overflowX:"auto"}}>
               {STEPS_CREATE.map((s,i)=>(
                 <div key={s} style={{display:"flex",alignItems:"center"}}>
@@ -323,7 +277,7 @@ function App() {
               ))}
             </div>
 
-            {/* STEP 0 Subir */}
+            {/* Step 0 */}
             {step===0&&(
               <div>
                 <div onDragOver={e=>{e.preventDefault();setDragging(true);}} onDragLeave={()=>setDragging(false)} onDrop={onDrop} onClick={()=>fileRef.current.click()} style={{border:`2px dashed ${dragging?"#f093fb":"rgba(255,255,255,0.2)"}`,borderRadius:16,padding:34,textAlign:"center",cursor:"pointer",background:dragging?"rgba(240,147,251,0.1)":"rgba(255,255,255,0.03)",marginBottom:12}}>
@@ -343,11 +297,11 @@ function App() {
                   </div>
                 )}
                 <textarea value={userText} onChange={e=>setUserText(e.target.value)} placeholder="Contexto o idea para la publicación (opcional)..." style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:12,padding:12,color:"#fff",fontSize:14,resize:"vertical",minHeight:70,boxSizing:"border-box",marginBottom:14}}/>
-                <GradBtn onClick={()=>setStep(1)} disabled={files.length===0&&!userText}>Continuar →</GradBtn>
+                <Btn onClick={()=>setStep(1)} disabled={files.length===0&&!userText}>Continuar →</Btn>
               </div>
             )}
 
-            {/* STEP 1 Mejorar */}
+            {/* Step 1 */}
             {step===1&&(
               <div>
                 {previewImg&&(
@@ -356,15 +310,13 @@ function App() {
                   </div>
                 )}
                 <Card style={{marginBottom:12}}>
-                  <Label>Filtros</Label>
+                  <Lbl>Filtros</Lbl>
                   <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
-                    {FILTERS.map(f=>(
-                      <button key={f.id} onClick={()=>setFilter(f.id)} style={{padding:"8px 4px",borderRadius:8,border:`2px solid ${filter===f.id?"#f093fb":"transparent"}`,background:filter===f.id?"rgba(240,147,251,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer"}}>{f.label}</button>
-                    ))}
+                    {FILTERS.map(f=><button key={f.id} onClick={()=>setFilter(f.id)} style={{padding:"8px 4px",borderRadius:8,border:`2px solid ${filter===f.id?"#f093fb":"transparent"}`,background:filter===f.id?"rgba(240,147,251,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer"}}>{f.label}</button>)}
                   </div>
                 </Card>
                 <Card style={{marginBottom:12}}>
-                  <Label>Formato</Label>
+                  <Lbl>Formato</Lbl>
                   <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:6}}>
                     {FORMATS.map(f=>(
                       <button key={f.id} onClick={()=>setFormat(f.id)} style={{padding:"10px 8px",borderRadius:8,border:`2px solid ${format===f.id?"#4facfe":"transparent"}`,background:format===f.id?"rgba(79,172,254,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer",textAlign:"left"}}>
@@ -375,20 +327,20 @@ function App() {
                 </Card>
                 {files.some(f=>f.file.type.startsWith("video/"))&&(
                   <Card style={{marginBottom:12}}>
-                    <Label>Música del Reel</Label>
+                    <Lbl>Música del Reel</Lbl>
                     <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:4}}>
                       {MOODS.map(m=><button key={m} onClick={()=>setMood(m)} style={{padding:"5px 12px",borderRadius:20,border:`1px solid ${mood===m?"#f5576c":"rgba(255,255,255,0.2)"}`,background:mood===m?"rgba(245,87,108,0.2)":"transparent",color:mood===m?"#f5576c":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{m}</button>)}
                     </div>
                   </Card>
                 )}
                 <div style={{display:"flex",gap:10}}>
-                  <GradBtn onClick={()=>setStep(0)} style={{background:"rgba(255,255,255,0.1)",flex:1}}>← Atrás</GradBtn>
-                  <GradBtn onClick={()=>setStep(2)} style={{flex:2}}>Siguiente →</GradBtn>
+                  <Btn onClick={()=>setStep(0)} style={{background:"rgba(255,255,255,0.1)",flex:1}}>← Atrás</Btn>
+                  <Btn onClick={()=>setStep(2)} style={{flex:2}}>Siguiente →</Btn>
                 </div>
               </div>
             )}
 
-            {/* STEP 2 Texto sobre imagen */}
+            {/* Step 2 */}
             {step===2&&(
               <div>
                 <div style={{position:"relative",borderRadius:14,overflow:"hidden",aspectRatio:format,background:"#111",maxWidth:240,margin:"0 auto 16px"}}>
@@ -396,87 +348,87 @@ function App() {
                   {textOverlay&&<div style={{position:"absolute",bottom:20,left:0,right:0,textAlign:"center",color:overlayColor,fontSize:overlaySize,fontWeight:800,textShadow:"0 2px 8px rgba(0,0,0,0.8)",padding:"0 12px"}}>{textOverlay}</div>}
                 </div>
                 <Card style={{marginBottom:14}}>
-                  <Label>Texto sobre la imagen</Label>
+                  <Lbl>Texto sobre la imagen</Lbl>
                   <input value={textOverlay} onChange={e=>setTextOverlay(e.target.value)} placeholder="Ej: ¡Oferta especial! 🔥" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:10,color:"#fff",fontSize:14,boxSizing:"border-box",marginBottom:10}}/>
                   <div style={{display:"flex",gap:12,alignItems:"center"}}>
-                    <div style={{flex:1}}><Label>Color</Label><input type="color" value={overlayColor} onChange={e=>setOverlayColor(e.target.value)} style={{width:"100%",height:36,borderRadius:8}}/></div>
-                    <div style={{flex:2}}><Label>Tamaño: {overlaySize}px</Label><input type="range" min={14} max={52} value={overlaySize} onChange={e=>setOverlaySize(+e.target.value)} style={{width:"100%"}}/></div>
+                    <div style={{flex:1}}><Lbl>Color</Lbl><input type="color" value={overlayColor} onChange={e=>setOverlayColor(e.target.value)} style={{width:"100%",height:36,borderRadius:8,border:"none"}}/></div>
+                    <div style={{flex:2}}><Lbl>Tamaño: {overlaySize}px</Lbl><input type="range" min={14} max={52} value={overlaySize} onChange={e=>setOverlaySize(+e.target.value)} style={{width:"100%"}}/></div>
                   </div>
                 </Card>
                 <div style={{display:"flex",gap:10}}>
-                  <GradBtn onClick={()=>setStep(1)} style={{background:"rgba(255,255,255,0.1)",flex:1}}>← Atrás</GradBtn>
-                  <GradBtn onClick={()=>setStep(3)} style={{flex:2}}>Generar Copy →</GradBtn>
+                  <Btn onClick={()=>setStep(1)} style={{background:"rgba(255,255,255,0.1)",flex:1}}>← Atrás</Btn>
+                  <Btn onClick={()=>setStep(3)} style={{flex:2}}>Generar Copy →</Btn>
                 </div>
               </div>
             )}
 
-            {/* STEP 3 Copy */}
+            {/* Step 3 */}
             {step===3&&(
               <div>
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:14}}>
                   <div>
-                    <Label>Plataforma</Label>
+                    <Lbl>Plataforma</Lbl>
                     <div style={{display:"flex",flexDirection:"column",gap:4}}>
                       {["instagram","whatsapp"].map(p=><button key={p} onClick={()=>setPlatform(p)} style={{padding:"8px 6px",borderRadius:8,border:`2px solid ${platform===p?"#f093fb":"transparent"}`,background:platform===p?"rgba(240,147,251,0.15)":"rgba(255,255,255,0.07)",color:"#fff",fontSize:12,cursor:"pointer"}}>{p==="instagram"?"📸 Instagram":"💬 WhatsApp"}</button>)}
                     </div>
                   </div>
                   <div>
-                    <Label>Tono</Label>
-                    <select value={tone} onChange={e=>setTone(e.target.value)} style={{width:"100%",padding:"8px",borderRadius:8,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:13,marginBottom:8}}>
+                    <Lbl>Tono</Lbl>
+                    <select value={tone} onChange={e=>setTone(e.target.value)} style={{width:"100%",padding:"8px",borderRadius:8,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:13}}>
                       {Object.keys(COPIES).map(t=><option key={t} value={t}>{t}</option>)}
                     </select>
                   </div>
                 </div>
-                <GradBtn onClick={generateCopy} style={{background:"linear-gradient(135deg,#4facfe,#00f2fe)",marginBottom:14}}>✨ Generar Copy + Hashtags</GradBtn>
+                <Btn onClick={generateCopy} disabled={loadingCopy} style={{background:loadingCopy?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#4facfe,#00f2fe)",marginBottom:14}}>
+                  {loadingCopy?"🤖 Generando con IA...":"🤖 Generar Copy + Hashtags"}
+                </Btn>
                 {copy&&(
                   <>
                     <Card style={{marginBottom:12}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                        <Label>Descripción</Label>
+                        <Lbl>Descripción</Lbl>
                         <button onClick={()=>copyToClipboard(copy)} style={{background:"rgba(255,255,255,0.1)",border:"none",color:"#fff",borderRadius:6,padding:"3px 10px",fontSize:11,cursor:"pointer"}}>Copiar</button>
                       </div>
                       <textarea value={copy} onChange={e=>setCopy(e.target.value)} style={{width:"100%",background:"transparent",border:"none",color:"#fff",fontSize:13,lineHeight:1.6,resize:"vertical",minHeight:80,boxSizing:"border-box"}}/>
                     </Card>
                     <Card style={{marginBottom:14}}>
-                      <Label>Hashtags — tocá para seleccionar/deseleccionar</Label>
+                      <Lbl>Hashtags — tocá para seleccionar</Lbl>
                       <div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:6}}>
-                        {hashtags.map(h=><button key={h} onClick={()=>setSelHashtags(p=>p.includes(h)?p.filter(x=>x!==h):[...p,h])} style={{padding:"4px 10px",borderRadius:20,border:`1px solid ${selHashtags.includes(h)?"#f093fb":"rgba(255,255,255,0.2)"}`,background:selHashtags.includes(h)?"rgba(240,147,251,0.2)":"transparent",color:selHashtags.includes(h)?"#f093fb":"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer"}}>{h}</button>)}
+                        {hashtags.map(h=><button key={h} onClick={()=>setSelTags(p=>p.includes(h)?p.filter(x=>x!==h):[...p,h])} style={{padding:"4px 10px",borderRadius:20,border:`1px solid ${selTags.includes(h)?"#f093fb":"rgba(255,255,255,0.2)"}`,background:selTags.includes(h)?"rgba(240,147,251,0.2)":"transparent",color:selTags.includes(h)?"#f093fb":"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer"}}>{h}</button>)}
                       </div>
                     </Card>
                   </>
                 )}
                 <div style={{display:"flex",gap:10}}>
-                  <GradBtn onClick={()=>setStep(2)} style={{background:"rgba(255,255,255,0.1)",flex:1}}>← Atrás</GradBtn>
-                  <GradBtn onClick={()=>setStep(4)} disabled={!copy} style={{flex:2}}>Exportar →</GradBtn>
+                  <Btn onClick={()=>setStep(2)} style={{background:"rgba(255,255,255,0.1)",flex:1}}>← Atrás</Btn>
+                  <Btn onClick={()=>setStep(4)} disabled={!copy} style={{flex:2}}>Exportar →</Btn>
                 </div>
               </div>
             )}
 
-            {/* STEP 4 Exportar */}
+            {/* Step 4 */}
             {step===4&&(
               <div>
                 <Card style={{marginBottom:14}}>
-                  <Label>Vista previa final</Label>
+                  <Lbl>Vista previa final</Lbl>
                   <div style={{position:"relative",borderRadius:12,overflow:"hidden",aspectRatio:format,background:"#111",maxWidth:220,margin:"10px auto"}}>
                     {previewImg&&<img src={previewImg} style={{width:"100%",height:"100%",objectFit:"cover",filter:filter==="none"?"none":filter}}/>}
                     {textOverlay&&<div style={{position:"absolute",bottom:16,left:0,right:0,textAlign:"center",color:overlayColor,fontSize:Math.max(overlaySize*0.6,12),fontWeight:800,textShadow:"0 2px 8px rgba(0,0,0,0.8)",padding:"0 10px"}}>{textOverlay}</div>}
                   </div>
                   <div style={{fontSize:13,lineHeight:1.6,color:"rgba(255,255,255,0.8)",marginTop:10}}>{copy}</div>
-                  {selHashtags.length>0&&<div style={{fontSize:12,color:"#4facfe",marginTop:6}}>{selHashtags.join(" ")}</div>}
+                  {selTags.length>0&&<div style={{fontSize:12,color:"#4facfe",marginTop:6}}>{selTags.join(" ")}</div>}
                 </Card>
                 <Card style={{marginBottom:14}}>
-                  <Label>⏰ Mejor horario para publicar</Label>
-                  <div style={{fontWeight:700,color:"#f093fb",fontSize:15,marginTop:4}}>{BEST_TIMES[platform]}</div>
-                  <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",marginTop:2}}>Basado en datos promedio de {platform}</div>
+                  <Lbl>⏰ Mejor horario para publicar</Lbl>
+                  <div style={{fontWeight:700,color:"#f093fb",fontSize:15,marginTop:4}}>{platform==="instagram"?igTime:waTime} hs</div>
+                  <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",marginTop:2}}>Podés cambiarlo en ⚙️ Configuración</div>
                 </Card>
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
-                  <button onClick={()=>copyToClipboard(fullText)} style={{padding:"12px 8px",borderRadius:12,border:"none",background:copied?"rgba(79,172,254,0.3)":"linear-gradient(135deg,#667eea,#764ba2)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>
-                    {copied?"✅ Copiado!":"📋 Copiar todo"}
-                  </button>
+                  <button onClick={()=>copyToClipboard(fullText)} style={{padding:"12px 8px",borderRadius:12,border:"none",background:copied?"rgba(79,172,254,0.4)":"linear-gradient(135deg,#667eea,#764ba2)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>{copied?"✅ Copiado!":"📋 Copiar todo"}</button>
                   {previewImg&&<a href={previewImg} download="mi-contenido.jpg" style={{textDecoration:"none"}}><button style={{width:"100%",padding:"12px 8px",borderRadius:12,border:"none",background:"linear-gradient(135deg,#43e97b,#38f9d7)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer"}}>⬇️ Descargar</button></a>}
                 </div>
-                <GradBtn onClick={saveToHistory} style={{marginBottom:10}}>💾 Guardar en historial</GradBtn>
-                <GradBtn onClick={()=>{setStep(0);setFiles([]);setCopy("");setHashtags([]);setUserText("");setFilter("none");setTextOverlay("");}} style={{background:"rgba(255,255,255,0.08)"}}>🔄 Nuevo contenido</GradBtn>
+                <Btn onClick={saveToHistory} style={{marginBottom:10}}>💾 Guardar en historial</Btn>
+                <Btn onClick={()=>{setStep(0);setFiles([]);setCopy("");setHashtags([]);setUserText("");setFilter("none");setTextOverlay("");}} style={{background:"rgba(255,255,255,0.08)"}}>🔄 Nuevo contenido</Btn>
               </div>
             )}
           </div>
@@ -492,26 +444,26 @@ function App() {
                 return <div key={d} onClick={()=>{setCalDay(calDay===i?null:i);setCalNote(has?.nota||"");setCalTipo(has?.tipo||"📸 Foto");}} style={{background:calDay===i?"rgba(240,147,251,0.2)":has?"rgba(79,172,254,0.12)":"rgba(255,255,255,0.05)",border:`1px solid ${calDay===i?"#f093fb":has?"#4facfe":"rgba(255,255,255,0.1)"}`,borderRadius:10,padding:"10px 2px",textAlign:"center",cursor:"pointer"}}>
                   <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:4}}>{d}</div>
                   <div style={{fontSize:16}}>{has?has.emoji||"📌":"+"}</div>
-                  {has&&<div style={{fontSize:8,color:"#4facfe",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 2px"}}>{has.tipo?.split(" ")[1]||""}</div>}
+                  {has&&<div style={{fontSize:8,color:"#4facfe",marginTop:2}}>{has.tipo?.split(" ")[1]||""}</div>}
                 </div>;
               })}
             </div>
             {calDay!==null&&(
               <Card style={{marginBottom:16}}>
-                <Label>Publicación del {DAYS[calDay]}</Label>
+                <Lbl>Publicación del {DAYS[calDay]}</Lbl>
                 <input value={calNote} onChange={e=>setCalNote(e.target.value)} placeholder="¿Qué vas a publicar?" style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,padding:10,color:"#fff",fontSize:13,boxSizing:"border-box",marginBottom:10}}/>
                 <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
                   {["📸 Foto","🎬 Reel","📊 Carrusel","📖 Story"].map(t=><button key={t} onClick={()=>setCalTipo(t)} style={{padding:"5px 10px",borderRadius:20,border:`1px solid ${calTipo===t?"#f093fb":"rgba(255,255,255,0.2)"}`,background:calTipo===t?"rgba(240,147,251,0.2)":"transparent",color:calTipo===t?"#f093fb":"rgba(255,255,255,0.6)",fontSize:12,cursor:"pointer"}}>{t}</button>)}
                 </div>
                 <div style={{display:"flex",gap:8}}>
-                  <GradBtn onClick={()=>{setCalItems(p=>({...p,[calDay]:{nota:calNote,tipo:calTipo,emoji:calTipo[0]}}));setCalDay(null);}} style={{flex:2}}>💾 Guardar</GradBtn>
-                  <GradBtn onClick={()=>{setCalItems(p=>{const n={...p};delete n[calDay];return n;});setCalDay(null);}} style={{background:"rgba(255,87,87,0.3)",flex:1}}>🗑️ Borrar</GradBtn>
+                  <Btn onClick={()=>{setCalItems(p=>({...p,[calDay]:{nota:calNote,tipo:calTipo,emoji:calTipo[0]}}));setCalDay(null);}} style={{flex:2}}>💾 Guardar</Btn>
+                  <Btn onClick={()=>{setCalItems(p=>{const n={...p};delete n[calDay];return n;});setCalDay(null);}} style={{background:"rgba(255,87,87,0.3)",flex:1}}>🗑️ Borrar</Btn>
                 </div>
               </Card>
             )}
             {Object.keys(calItems).length>0&&(
               <Card>
-                <Label>Resumen de la semana</Label>
+                <Lbl>Resumen de la semana</Lbl>
                 {Object.entries(calItems).sort(([a],[b])=>a-b).map(([d,v])=>(
                   <div key={d} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
                     <div style={{width:34,height:34,borderRadius:10,background:"rgba(240,147,251,0.15)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}>{v.emoji}</div>
@@ -527,12 +479,12 @@ function App() {
         {tab===3&&(
           <div>
             <h2 style={{textAlign:"center",marginBottom:8,fontSize:18}}>💡 Generador de Ideas</h2>
-            <p style={{textAlign:"center",color:"rgba(255,255,255,0.5)",fontSize:13,marginBottom:16}}>Ideas personalizadas para tu contenido</p>
+            <p style={{textAlign:"center",color:"rgba(255,255,255,0.5)",fontSize:13,marginBottom:16}}>Ideas personalizadas con IA para tu contenido</p>
             <div style={{display:"flex",gap:10,marginBottom:14}}>
               <input value={ideasTopic} onChange={e=>setIdeasTopic(e.target.value)} onKeyDown={e=>e.key==="Enter"&&generateIdeas()} placeholder="Tu rubro (ej: ropa, fitness, cocina...)" style={{flex:1,background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"10px 14px",color:"#fff",fontSize:13}}/>
               <button onClick={generateIdeas} disabled={loadingIdeas} style={{padding:"10px 18px",borderRadius:10,border:"none",background:loadingIdeas?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#f093fb,#f5576c)",color:"#fff",fontWeight:700,fontSize:14,cursor:loadingIdeas?"not-allowed":"pointer",whiteSpace:"nowrap"}}>{loadingIdeas?"⏳...":"✨ Generar"}</button>
             </div>
-            {ideas.length>0&&(
+            {ideas.length>0?(
               <div style={{display:"flex",flexDirection:"column",gap:10}}>
                 {ideas.map((idea,i)=>(
                   <Card key={i} style={{display:"flex",gap:12,alignItems:"flex-start"}}>
@@ -546,8 +498,7 @@ function App() {
                   </Card>
                 ))}
               </div>
-            )}
-            {ideas.length===0&&(
+            ):(
               <div style={{textAlign:"center",padding:40,color:"rgba(255,255,255,0.3)"}}>
                 <div style={{fontSize:40,marginBottom:12}}>🤔</div>
                 <div>Ingresá tu rubro y tocá Generar</div>
@@ -597,9 +548,9 @@ function App() {
 ReactDOM.render(React.createElement(App), document.getElementById("root"));
 </script>
 <script>
-  if("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/sw.js").then(r => console.log("SW registrado:", r.scope));
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",()=>{
+      navigator.serviceWorker.register("/sw.js").then(r=>console.log("SW OK:",r.scope)).catch(e=>console.log("SW error:",e));
     });
   }
 </script>
