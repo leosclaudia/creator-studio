@@ -27,7 +27,7 @@
 <div id="root"></div>
 <script type="text/babel">
 const {useState,useRef,useCallback}=React;
-const GEMINI_KEY="AIzaSyCDX2w0qS2tVpV8E5Cci07XJHe6vrDsT9E";
+const GEMINI_KEY="AIzaSyAKx5XItSMWeA37hRt5_HQbJfUHCeZR_So";
 const TABS=["🏠","📤","🎨","📅","💡","🏷️","🛒","🌿","🕐"];
 const TAB_LABELS=["Inicio","Crear","Diseño","Calendario","Ideas","Precios","Pedidos","Huerta","Historial"];
 const WHATSAPP_NUM="5492923539661";
@@ -84,8 +84,7 @@ function Btn({onClick,disabled,children,style}){return <button onClick={onClick}
 
 function App(){
   const [tab,setTab]=useState(0);
-  const [step,setStep]=useState(0
-                               
+  const [step,setStep]=useState(0);
   const [files,setFiles]=useState([]);
   const [userText,setUserText]=useState("");
   const [filter,setFilter]=useState("none");
