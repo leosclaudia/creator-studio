@@ -174,7 +174,10 @@ function App(){
   const [cosechaForm,setCosechaForm]=useState({cultivo:"",cantidad:"",unidad:"kg",nota:"",fecha:new Date().toISOString().split("T")[0]});
   const [showAddCosecha,setShowAddCosecha]=useState(false);
 
-  const fileRef=useRef();
+  // Intérprete de pedidos WA
+  const [waPedidoTexto,setWaPedidoTexto]=useState("");
+  const [waPedidoLoading,setWaPedidoLoading]=useState(false);
+  const [showWaInterp,setShowWaInterp]=useState(false);
   const resizeRef=useRef();
   const collageRef=useRef();
   const cfImgRef=useRef();
@@ -355,7 +358,38 @@ function App(){
     const texto=`Hola ${p.cliente}! Tu pedido:\n${p.items.map(i=>`- ${i.cantidad}x ${i.nombre} ${i.precio}`).join("\n")}\nTotal: ${p.total}\nEntrega: ${p.entrega||"a coordinar"}`;
     window.open(`https://wa.me/${p.telefono||WHATSAPP_NUM}?text=${encodeURIComponent(texto)}`,"_blank");
   };
-  const pedidosFiltrados=pedidos.filter(p=>pedidoFiltro==="todos"||p.estado===pedidoFiltro);
+  const interpretarPedidoWA=async()=>{
+    if(!waPedidoTexto.trim())return;
+    setWaPedidoLoading(true);
+    const prompt=`Analizá este mensaje de WhatsApp de un cliente y extraé la información del pedido. Respondé SOLO con JSON sin markdown:
+{"cliente":"nombre si lo menciona o vacío","items":[{"nombre":"producto","cantidad":1,"precio":""}],"nota":"cualquier aclaración extra","entrega":"fecha si la menciona o vacío"}
+Mensaje: "${waPedidoTexto}"`;
+    try{
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+      const data=await res.json();
+      const text=data.candidates?.[0]?.content?.parts?.[0]?.text||"";
+      const parsed=JSON.parse(text.replace(/```json|```/g,"").trim());
+      // Buscar precios en productos guardados
+      const itemsConPrecio=parsed.items.map(item=>{
+        const prod=productos.find(p=>p.nombre.toLowerCase().includes(item.nombre.toLowerCase()));
+        return{...item,precio:item.precio||prod?.precio||""};
+      });
+      setPedidoForm(p=>({...p,
+        cliente:parsed.cliente||p.cliente,
+        items:itemsConPrecio,
+        nota:parsed.nota||"",
+        entrega:parsed.entrega||"",
+        canal:"whatsapp"
+      }));
+      setShowWaInterp(false);
+      setWaPedidoTexto("");
+      setShowAddPedido(true);
+      setEditPedidoIdx(null);
+    }catch{
+      alert("❌ No pude interpretar el mensaje. Intentá de nuevo o cargalo manualmente.");
+    }
+    setWaPedidoLoading(false);
+  };
   const pendientes=pedidos.filter(p=>p.estado==="pendiente").length;
   const entregados=pedidos.filter(p=>p.estado==="entregado").length;
   const totalMes=pedidos.filter(p=>{const d=new Date(p.fecha);const n=new Date();return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();}).reduce((a,p)=>a+(+p.total||0),0);
@@ -364,7 +398,7 @@ function App(){
     if(!chatInput.trim())return;
     const userMsg={role:"user",text:chatInput};
     setChatMsgs(p=>[...p,userMsg]);setChatInput("");setChatLoading(true);
-    const prompt=`Sos un experto en agroecología y huerta orgánica. Respondé en español, claro y práctico. Pregunta: "${chatInput}"`;
+    const prompt=`Sos un experto en agroecología, huerta orgánica, Sintropia (agricultura sintrópica de Ernst Götsch), Agrofloresta y Bosques Comestibles. Trabajás con la Huerta Agroecológica Siglo XXI en Argentina. Respondé en español, de forma clara, práctica y detallada. Incluí conceptos de sucesión natural, estratos, consorcio de plantas y regeneración del suelo cuando sea relevante. Pregunta: "${chatInput}"`;
     try{
       const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
       const data=await res.json();
@@ -499,7 +533,20 @@ function App(){
         </div>
       </div>)}
 
-      {/* Add Cosecha Modal */}
+      {/* Modal intérprete WA */}
+      {showWaInterp&&(<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+        <div style={{background:"#0d1f1a",borderRadius:20,padding:24,width:"100%",maxWidth:400,border:"1px solid rgba(37,211,102,0.4)"}}>
+          <h3 style={{margin:"0 0 8px"}}>💬 Interpretar pedido de WhatsApp</h3>
+          <p style={{fontSize:12,color:"rgba(255,255,255,0.5)",marginBottom:14}}>Pegá el mensaje del cliente y la IA lo convierte en un pedido automáticamente</p>
+          <textarea value={waPedidoTexto} onChange={e=>setWaPedidoTexto(e.target.value)} placeholder={`Ej:\nHola! Quiero 2 atados de lechuga, 1kg de tomates cherry y 3 huevos. Para el viernes si pueden. Gracias!`} style={{width:"100%",background:"rgba(255,255,255,0.07)",border:"1px solid rgba(37,211,102,0.3)",borderRadius:10,padding:12,color:"#fff",fontSize:13,boxSizing:"border-box",minHeight:120,resize:"vertical",marginBottom:14}}/>
+          <div style={{display:"flex",gap:10}}>
+            <button onClick={()=>{setShowWaInterp(false);setWaPedidoTexto("");}} style={{flex:1,padding:"12px",borderRadius:12,border:"1px solid rgba(255,255,255,0.2)",background:"transparent",color:"#fff",fontSize:14,cursor:"pointer"}}>Cancelar</button>
+            <button onClick={interpretarPedidoWA} disabled={waPedidoLoading||!waPedidoTexto.trim()} style={{flex:2,padding:"12px",borderRadius:12,border:"none",background:waPedidoLoading?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#25d366,#128c7e)",color:"#fff",fontWeight:700,fontSize:14,cursor:waPedidoLoading?"not-allowed":"pointer"}}>
+              {waPedidoLoading?"🤖 Interpretando...":"🤖 Interpretar con IA"}
+            </button>
+          </div>
+        </div>
+      </div>)}
       {showAddCosecha&&(<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
         <div style={{background:"#0d1f1a",borderRadius:20,padding:24,width:"100%",maxWidth:360,border:"1px solid rgba(0,201,167,0.3)"}}>
           <h3 style={{margin:"0 0 16px"}}>📦 Nueva cosecha</h3>
@@ -788,7 +835,10 @@ function App(){
           <div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
               <h2 style={{fontSize:18}}>🛒 Gestión de Pedidos</h2>
-              <button onClick={()=>{setShowAddPedido(true);setEditPedidoIdx(null);setPedidoForm({cliente:"",telefono:"",canal:"whatsapp",items:[],total:"",fecha:new Date().toISOString().split("T")[0],entrega:"",estado:"pendiente",nota:""});}} style={{background:"linear-gradient(135deg,#00c9a7,#00b4db)",border:"none",color:"#fff",borderRadius:10,padding:"8px 14px",fontSize:13,fontWeight:700,cursor:"pointer"}}>+ Nuevo</button>
+              <div style={{display:"flex",gap:6}}>
+                <button onClick={()=>setShowWaInterp(true)} style={{background:"linear-gradient(135deg,#25d366,#128c7e)",border:"none",color:"#fff",borderRadius:10,padding:"8px 10px",fontSize:12,fontWeight:700,cursor:"pointer"}}>💬 Pegar WA</button>
+                <button onClick={()=>{setShowAddPedido(true);setEditPedidoIdx(null);setPedidoForm({cliente:"",telefono:"",canal:"whatsapp",items:[],total:"",fecha:new Date().toISOString().split("T")[0],entrega:"",estado:"pendiente",nota:""});}} style={{background:"linear-gradient(135deg,#00c9a7,#00b4db)",border:"none",color:"#fff",borderRadius:10,padding:"8px 12px",fontSize:13,fontWeight:700,cursor:"pointer"}}>+ Nuevo</button>
+              </div>
             </div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:16}}>
               <Card style={{textAlign:"center",border:"1px solid rgba(255,202,87,0.3)"}}><div style={{fontSize:22}}>🟡</div><div style={{fontWeight:700,fontSize:20,color:"#feca57"}}>{pendientes}</div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)"}}>Pendientes</div></Card>
@@ -864,7 +914,7 @@ function App(){
                 <button onClick={sendChat} disabled={chatLoading||!chatInput.trim()} style={{padding:"12px 18px",borderRadius:12,border:"none",background:chatLoading?"rgba(255,255,255,0.1)":"linear-gradient(135deg,#00c9a7,#00b4db)",color:"#fff",fontWeight:700,fontSize:14,cursor:chatLoading?"not-allowed":"pointer"}}>➤</button>
               </div>
               <div style={{display:"flex",gap:6,marginTop:10,flexWrap:"wrap"}}>
-                {["¿Qué plantar en otoño?","¿Cómo combatir pulgones?","¿Cómo hacer compost?","¿Cuándo regar?"].map(q=>(
+                {["¿Qué plantar en otoño?","¿Cómo combatir pulgones?","¿Cómo hacer compost?","¿Cuándo regar?","¿Qué es la Sintropia?","¿Cómo diseño una Agrofloresta?","¿Qué es un bosque comestible?","¿Cómo funciona la sucesión natural?"].map(q=>(
                   <button key={q} onClick={()=>setChatInput(q)} style={{padding:"5px 10px",borderRadius:16,border:"1px solid rgba(0,201,167,0.3)",background:"rgba(0,201,167,0.1)",color:"#00c9a7",fontSize:11,cursor:"pointer"}}>{q}</button>
                 ))}
               </div>
